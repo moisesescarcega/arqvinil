@@ -10,7 +10,10 @@
 
     let items: any[] = $state([]);
     let modelColor: string = $state("black");
-    let vinilSize = $state(0.8);
+    let vinilSize: number = $state(0.8);
+    let vinilRotation: number = $state(0);
+    let vinilX: number = $state(0);
+    let vinilY: number = $state(0);
     let viewOrder = $state(true);
     let defaultModal = $state(false);
     let isProcessing = $state(false);
@@ -99,10 +102,10 @@
     };
 </script>
 <Canvas>
-    <Scene {modelColor} bind:vinilSize />
+    <Scene {modelColor} bind:vinilSize bind:vinilRotation bind:vinilX bind:vinilY />
 </Canvas>
 <section class="absolute ml-3 mr-3 lg:right-3 lg:top-[5rem] bottom-[22px] max-w-[420px]">
-    <Configurator bind:modelColor {setViewOrder} bind:preOrder bind:vinilSize />
+    <Configurator bind:modelColor {setViewOrder} bind:preOrder bind:vinilSize bind:vinilRotation bind:vinilX bind:vinilY />
 </section>
 <section>
     <button class="fixed top-[52px] z-[11] rounded-r-lg bg-primary-500 py-1" onclick={() => setViewOrder(false)}>

@@ -22,5 +22,6 @@ export const kitsColores = [
     { name: "blanco", value: 'white' },
     { name: "negro", value: 'black' },
     { name: "gris", value: 'gray' },
-    { name: "translúcido", value: 'translucent' }
+    { name: "rojo", value: 'red' },
+    { name: "amarillo", value: 'yellow' }
 ]

@@ -6,6 +6,9 @@
     let { 
         modelColor = $bindable('black'),
         vinilSize = $bindable(),
+        vinilRotation = $bindable(),
+        vinilX = $bindable(),
+        vinilY = $bindable(),
         setViewOrder = () => {},
         preOrder = $bindable({
 			scale: "",
@@ -25,6 +28,9 @@
     }: { 
         modelColor: string,
         vinilSize: number,
+        vinilRotation: number,
+        vinilX: number,
+        vinilY: number,
         setViewOrder: (value: boolean) => void,
         preOrder: {
             scale: string;
@@ -291,19 +297,25 @@
                 </Label>
             </div>
             <div class="grid grid-cols-2 gap-4 mt-3">
-                <Label class="mb-3">
-                    Tamaño
-                    <Range id="vSize" bind:value={vinilSize} max={1.5} min={0.5} step={0.1}
-                    on:change={() => console.log('Configurator vinilSize:', vinilSize)} />
-                </Label>
+                <div class="grid grid-cols-1 gap-2">
+                    <Label class="mb-3">
+                        Tamaño
+                        <Range id="vSize" bind:value={vinilSize} max={1.5} min={0.5} step={0.05}
+                        on:change={() => console.log('Configurator vinilSize:', vinilSize)} />
+                    </Label>
+                    <Label class="mb-3">
+                        Rotación
+                        <Range id="vSize" bind:value={vinilRotation} max={360} min={0} step={15} />
+                    </Label>
+                </div>
                 <div class="grid grid-cols-1 gap-2">
                     <Label class="mb-3">
                         Posición X
-                        <Range id="vPosX" value={0.02} max={0.1} min={0} step={0.01} />
+                        <Range id="vPosX" bind:value={vinilX} max={1} min={-1} step={0.1} />
                     </Label>
                     <Label class="mb-3">
                         Posición Y
-                        <Range id="vPosY" value={0.02} max={0.1} min={0} step={0.01} />
+                        <Range id="vPosY" bind:value={vinilY} max={1} min={-1} step={0.1} />
                     </Label>
                 </div>
             </div>

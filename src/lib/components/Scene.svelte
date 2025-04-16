@@ -2,9 +2,16 @@
 	import { T, useThrelte, useTask } from '@threlte/core';
 	import { OrbitControls, Suspense, Text } from '@threlte/extras';
 	import { onMount } from 'svelte';
-	import { DoubleSide, Color, ShaderMaterial, type WebGLRenderer, TextureLoader, Vector3, Plane } from 'three';
+	import { DoubleSide, Color, ShaderMaterial, type WebGLRenderer, TextureLoader, Vector3, Plane, MathUtils, Vector2 } from 'three';
 
-	let { modelColor = 'black', vinilSize = $bindable() } = $props();
+	let { 
+		modelColor = 'black', 
+		vinilSize = $bindable(), 
+		vinilRotation = $bindable(),
+		vinilX = $bindable(),
+		vinilY = $bindable()
+	} = $props();
+	let vinilRotate = $derived(MathUtils.degToRad(vinilRotation));
 	let currentColor = $state(modelColor); // Estado reactivo local
 
 	let planosCorte = $state([
@@ -13,10 +20,6 @@
 		new Plane(new Vector3(1, 0, 0), 0.5),
 		new Plane(new Vector3(-1, 0, 0), 0.5)
 	]);
-
-	$effect(() => {
-		currentColor = modelColor; // Sincroniza cuando cambia la prop
-	});
 
 	let time = 0;
 	let shaderMaterial: ShaderMaterial | undefined = $state();
@@ -33,6 +36,10 @@
 		if (shaderMaterial) {
 			(shaderMaterial as ShaderMaterial).uniforms.uTime.value = time;
 		};
+	});
+
+	$effect(() => {
+		currentColor = modelColor; // Sincroniza cuando cambia la prop
 	});
 </script>
 
@@ -100,19 +107,27 @@
 		<T.PlaneGeometry args={[2, 2]} />
 		<T.MeshPhysicalMaterial color="gray" roughness={0.35} side={DoubleSide} />
 	</T.Mesh>
-	<T.Mesh rotation.z={-0.2} position.z={0.005} position.x={0.1} position.y={0.1} scale={0.8}>
-		<T.PlaneGeometry args={[2, 2]} />
-		<T.MeshStandardMaterial 
-			transparent 
-			map={new TextureLoader().load('manantiales_1.png')}
-			clippingPlanes={planosCorte}
-			emissive={new Color('red')}
-			emissiveIntensity={0.2}
-			roughness={0.1} 
-		/>
-	</T.Mesh>
-	<T.Mesh>
+	<T.Group rotation={[0, 0, vinilRotate]}>
+		<T.Mesh position.z={0.005} position.x={vinilX} position.y={vinilY} scale={vinilSize}>
+			<T.PlaneGeometry args={[2, 2]} />
+			<T.MeshStandardMaterial 
+				transparent 
+				map={
+					(() => { 
+						const texture = new TextureLoader().load('manantiales_1.png'); 
+						texture.center = new Vector2(0.5,0.5);
+						return texture; 
+					})()
+				}
+				clippingPlanes={planosCorte}
+				emissive={new Color(currentColor)}
+				emissiveIntensity={0.2}
+				roughness={0.1} 
+			/>
+		</T.Mesh>
+	</T.Group>
+	<!-- <T.Mesh>
 		<T.BoxGeometry args={[2,2,2]} />
 		<T.MeshStandardMaterial side={DoubleSide} color={'red'} clippingPlanes={planosCorte} />
-	</T.Mesh>
+	</T.Mesh> -->
 </Suspense>
