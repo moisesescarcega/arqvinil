@@ -1,40 +1,18 @@
 <script lang="ts">
 	import { T, useThrelte, useTask } from '@threlte/core';
-	import { CubeEnvironment, ImageMaterial, OrbitControls, Suspense, Text } from '@threlte/extras';
+	import { OrbitControls, Suspense, Text } from '@threlte/extras';
 	import { onMount } from 'svelte';
-	import { DoubleSide, Color, ShaderMaterial, type WebGLRenderer, TextureLoader, Vector3, Plane, MathUtils, MeshStandardMaterial } from 'three';
-	interface ClipPlanesProps {
-		index: number;
-		clipV1: number;
-		clipV2: number;
-		mantos: number;
-		rotacion: number;
-	}
+	import { DoubleSide, Color, ShaderMaterial, type WebGLRenderer, TextureLoader, Vector3, Plane } from 'three';
+
 	let { modelColor = 'black', vinilSize = $bindable() } = $props();
 	let currentColor = $state(modelColor); // Estado reactivo local
 
-	function calculateClipPlanes(props: ClipPlanesProps): Plane[] {
-		const axisY = new Vector3(0, 1, 0);
-		const axisZ = new Vector3(-1, 0, 0);
-
-		const anguloPorManto = 360 / props.mantos;
-		const medioAnguloPorManto = 180 / props.mantos;
-		const rotacionPlanoCorte = MathUtils.degToRad((anguloPorManto * props.index) + medioAnguloPorManto);
-		const rotacionPlanoInclinado = MathUtils.degToRad(90 + (props.rotacion * props.index));
-
-		return [
-		new Plane(new Vector3(0, 0, -1).applyAxisAngle(axisZ, MathUtils.degToRad(90)), 6),
-		new Plane(new Vector3(0, 0, 1).applyAxisAngle(axisY, rotacionPlanoCorte), 0),
-		new Plane(new Vector3(0, 0, -1).applyAxisAngle(axisY, rotacionPlanoCorte + MathUtils.degToRad(-anguloPorManto)), 0),
-		new Plane(new Vector3(0, 0, -1).applyAxisAngle(axisZ, MathUtils.degToRad(-props.clipV1)).applyAxisAngle(axisY, rotacionPlanoInclinado), props.clipV2)
-		];
-	}
 	let planosCorte = $state([
-		new Plane(new Vector3(0, -1, 0), 1),
-		new Plane(new Vector3(0, 0, 1).applyAxisAngle(new Vector3(0, 1, 0), MathUtils.degToRad(0)), -1),
+		new Plane(new Vector3(0, -1, 0), 0.5),
+		new Plane(new Vector3(0, 1, 0), 0.5),
+		new Plane(new Vector3(1, 0, 0), 0.5),
+		new Plane(new Vector3(-1, 0, 0), 0.5)
 	]);
-	let plano1 = new Plane(new Vector3(1, 0, 0).applyAxisAngle(new Vector3(0, 1, 0), MathUtils.degToRad(0)), 0);
-
 
 	$effect(() => {
 		currentColor = modelColor; // Sincroniza cuando cambia la prop
@@ -122,19 +100,19 @@
 		<T.PlaneGeometry args={[2, 2]} />
 		<T.MeshPhysicalMaterial color="gray" roughness={0.35} side={DoubleSide} />
 	</T.Mesh>
-	<T.Mesh>
+	<T.Mesh rotation.z={-0.2} position.z={0.005} position.x={0.1} position.y={0.1} scale={0.8}>
 		<T.PlaneGeometry args={[2, 2]} />
-		<ImageMaterial
-			transparent
-			side={DoubleSide}
-			url={'manantiales_1.png'}
-			monochromeColor={'red'}
-			zoom={vinilSize}
-			clippingPlanes={[plano1]}
+		<T.MeshStandardMaterial 
+			transparent 
+			map={new TextureLoader().load('manantiales_1.png')}
+			clippingPlanes={planosCorte}
+			emissive={new Color('red')}
+			emissiveIntensity={0.2}
+			roughness={0.1} 
 		/>
 	</T.Mesh>
 	<T.Mesh>
 		<T.BoxGeometry args={[2,2,2]} />
-		<T.MeshStandardMaterial side={DoubleSide} color={'red'} clippingPlanes={[plano1]} />
+		<T.MeshStandardMaterial side={DoubleSide} color={'red'} clippingPlanes={planosCorte} />
 	</T.Mesh>
 </Suspense>
