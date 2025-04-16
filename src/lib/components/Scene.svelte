@@ -2,9 +2,39 @@
 	import { T, useThrelte, useTask } from '@threlte/core';
 	import { CubeEnvironment, ImageMaterial, OrbitControls, Suspense, Text } from '@threlte/extras';
 	import { onMount } from 'svelte';
-	import { DoubleSide, Color, ShaderMaterial, type WebGLRenderer, TextureLoader } from 'three';
+	import { DoubleSide, Color, ShaderMaterial, type WebGLRenderer, TextureLoader, Vector3, Plane, MathUtils, MeshStandardMaterial } from 'three';
+	interface ClipPlanesProps {
+		index: number;
+		clipV1: number;
+		clipV2: number;
+		mantos: number;
+		rotacion: number;
+	}
 	let { modelColor = 'black', vinilSize = $bindable() } = $props();
 	let currentColor = $state(modelColor); // Estado reactivo local
+
+	function calculateClipPlanes(props: ClipPlanesProps): Plane[] {
+		const axisY = new Vector3(0, 1, 0);
+		const axisZ = new Vector3(-1, 0, 0);
+
+		const anguloPorManto = 360 / props.mantos;
+		const medioAnguloPorManto = 180 / props.mantos;
+		const rotacionPlanoCorte = MathUtils.degToRad((anguloPorManto * props.index) + medioAnguloPorManto);
+		const rotacionPlanoInclinado = MathUtils.degToRad(90 + (props.rotacion * props.index));
+
+		return [
+		new Plane(new Vector3(0, 0, -1).applyAxisAngle(axisZ, MathUtils.degToRad(90)), 6),
+		new Plane(new Vector3(0, 0, 1).applyAxisAngle(axisY, rotacionPlanoCorte), 0),
+		new Plane(new Vector3(0, 0, -1).applyAxisAngle(axisY, rotacionPlanoCorte + MathUtils.degToRad(-anguloPorManto)), 0),
+		new Plane(new Vector3(0, 0, -1).applyAxisAngle(axisZ, MathUtils.degToRad(-props.clipV1)).applyAxisAngle(axisY, rotacionPlanoInclinado), props.clipV2)
+		];
+	}
+	let planosCorte = $state([
+		new Plane(new Vector3(0, -1, 0), 1),
+		new Plane(new Vector3(0, 0, 1).applyAxisAngle(new Vector3(0, 1, 0), MathUtils.degToRad(0)), -1),
+	]);
+	let plano1 = new Plane(new Vector3(1, 0, 0).applyAxisAngle(new Vector3(0, 1, 0), MathUtils.degToRad(0)), 0);
+
 
 	$effect(() => {
 		currentColor = modelColor; // Sincroniza cuando cambia la prop
@@ -15,6 +45,7 @@
 
 	onMount(() => {
 		const { renderer } = useThrelte() as { renderer: WebGLRenderer };
+		renderer.localClippingEnabled = true;
 		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(window.innerWidth, window.innerHeight);
 	});
@@ -98,7 +129,12 @@
 			side={DoubleSide}
 			url={'manantiales_1.png'}
 			monochromeColor={'red'}
-			zoom={vinilSize} 
+			zoom={vinilSize}
+			clippingPlanes={[plano1]}
 		/>
+	</T.Mesh>
+	<T.Mesh>
+		<T.BoxGeometry args={[2,2,2]} />
+		<T.MeshStandardMaterial side={DoubleSide} color={'red'} clippingPlanes={[plano1]} />
 	</T.Mesh>
 </Suspense>
