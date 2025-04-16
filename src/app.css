@@ -1,0 +1,31 @@
+@import 'tailwindcss';
+/* @plugin '@tailwindcss/forms'; */
+@plugin '@tailwindcss/typography';
+
+@plugin 'flowbite/plugin';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary-50: #ffffea;
+  --color-primary-100: #fffcc5;
+  --color-primary-200: #fffa85;
+  --color-primary-300: #fff046;
+  --color-primary-400: #ffe21b;
+  --color-primary-500: #ffc300;
+  --color-primary-600: #e29700;
+  --color-primary-700: #bb6b02;
+  --color-primary-800: #985308;
+  --color-primary-900: #7c430b;
+}
+
+@source "../node_modules/flowbite-svelte/dist";
+
+body {
+  @apply bg-gray-50 dark:bg-gray-900;
+}
+
+canvas {
+  display: block;
+  z-index: -1;
+}
