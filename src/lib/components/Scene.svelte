@@ -3,28 +3,15 @@
 	import { CubeEnvironment, ImageMaterial, OrbitControls, Suspense, Text } from '@threlte/extras';
 	import { onMount } from 'svelte';
 	import { DoubleSide, Color, ShaderMaterial, type WebGLRenderer, TextureLoader } from 'three';
-	// import imageVertexShader from './vertex.glsl?raw';
-	// import imageFragmentShader from './fragment.glsl?raw';
 	let { modelColor = 'black', vinilSize = $bindable() } = $props();
 	let currentColor = $state(modelColor); // Estado reactivo local
 
 	$effect(() => {
-		// console.log('Color actualizado en Scene:', modelColor);
-    // if (imageShaderMaterial) {
-    //     imageShaderMaterial.uniforms.uZoom.value = vinilSize;
-    //     imageShaderMaterial.needsUpdate = true; // Forzar recompilación
-    //     // console.log('uZoom updated:', imageShaderMaterial.uniforms.uZoom.value); // Depuración
-    // };
-		if (imageShaderMaterial) {
-            imageShaderMaterial.uniforms.uZoom.value = vinilSize;
-            imageShaderMaterial.needsUpdate = true;
-        };
 		currentColor = modelColor; // Sincroniza cuando cambia la prop
 	});
 
 	let time = 0;
 	let shaderMaterial: ShaderMaterial | undefined = $state();
-  let imageShaderMaterial: ShaderMaterial | undefined = $state();
 
 	onMount(() => {
 		const { renderer } = useThrelte() as { renderer: WebGLRenderer };
@@ -37,9 +24,6 @@
 		if (shaderMaterial) {
 			(shaderMaterial as ShaderMaterial).uniforms.uTime.value = time;
 		};
-    if (imageShaderMaterial) {
-        imageShaderMaterial.uniforms.uZoom.value = vinilSize; // Actualiza uZoom
-    };
 	});
 </script>
 
@@ -109,35 +93,12 @@
 	</T.Mesh>
 	<T.Mesh>
 		<T.PlaneGeometry args={[2, 2]} />
-		<T.ShaderMaterial
-      bind:ref={imageShaderMaterial}
-      uniforms={{
-          uTexture: { value: new TextureLoader().load('manantiales_1.png') },
-          uOffset: { value: [0.1, 0.1] },
-          uZoom: { value: vinilSize },
-        //   uMonochromeColor: { value: new Color('red') }
-      }}
-      vertexShader={`
-varying vec2 vUv;
-uniform vec2 uOffset;
-void main() {
-    vec2 scaledUv = uv * ${vinilSize} + (1.0 - ${vinilSize}) * 0.5;
-    vUv = scaledUv + uOffset;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-}
-`}
-      fragmentShader={`
-uniform sampler2D uTexture;
-varying vec2 vUv;
-void main() {
-    vec4 texColor = texture2D(uTexture, vUv);
-	float luminance = 0.299 * texColor.r + 0.587 * texColor.g + 0.114 * texColor.b;
-	vec3 monoColor = vec3(1.0, 0.0, 0.0) * luminance;
-    gl_FragColor = vec4(monoColor, texColor.a);
-}
-	  `}
-      side={DoubleSide}
-      transparent={true}
-    />
+		<ImageMaterial
+			transparent
+			side={DoubleSide}
+			url={'manantiales_1.png'}
+			monochromeColor={'red'}
+			zoom={vinilSize} 
+		/>
 	</T.Mesh>
 </Suspense>
