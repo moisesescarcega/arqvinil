@@ -10,7 +10,7 @@
 
     let items: any[] = $state([]);
     let modelColor: string = $state("black");
-    let vinilSize: number = $state(0.8);
+    let vinilSize: number = $state(8);
     let vinilRotation: number = $state(0);
     let vinilX: number = $state(0);
     let vinilY: number = $state(0);

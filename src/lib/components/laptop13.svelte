@@ -55,8 +55,8 @@ Command: npx @threlte/gltf@3.0.1 ./static/laptop13.glb --transform --types --dra
     {@render fallback?.()}
   {:then gltf}
     <T.Group
-      position={[0, 0, -1.88]}
-      scale={0.02}
+      position={[0, 0, -10]}
+      scale={0.11}
       rotation.y={MathUtils.degToRad(180)}
     >
       <T.Group position={[-0.23, -94.85, 8.95]}>

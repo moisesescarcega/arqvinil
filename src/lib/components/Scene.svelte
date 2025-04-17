@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { T, useThrelte, useTask } from '@threlte/core';
-	import { OrbitControls, Suspense, Text } from '@threlte/extras';
+	import { OrbitControls, Suspense, Text, TransformControls } from '@threlte/extras';
 	import { onMount } from 'svelte';
 	import { DoubleSide, Color, ShaderMaterial, type WebGLRenderer, TextureLoader, Vector3, Plane, MathUtils, Vector2 } from 'three';
 	import Laptop13 from './laptop13.svelte';
@@ -16,10 +16,10 @@
 	let currentColor = $state(modelColor); // Estado reactivo local
 
 	let planosCorte = $state([
-		new Plane(new Vector3(0, -1, 0), 2),
-		new Plane(new Vector3(0, 1, 0), 1.9),
-		new Plane(new Vector3(1, 0, 0), 2.8),
-		new Plane(new Vector3(-1, 0, 0), 2.8)
+		new Plane(new Vector3(0, -1, 0), 10.7), //superior
+		new Plane(new Vector3(0, 1, 0), 10.3), //inferior
+		new Plane(new Vector3(1, 0, 0), 15.1), //izquierda
+		new Plane(new Vector3(-1, 0, 0), 15.1) //derecha
 	]);
 
 	let time = 0;
@@ -59,7 +59,7 @@
 		/>
 	{/snippet}
 
-	<T.PerspectiveCamera makeDefault position={[-2.5, 0, 2.5]} fov={50}>
+	<T.PerspectiveCamera makeDefault position={[-30, 0, 30]} fov={50}>
 		<OrbitControls
 			autoRotate={false}
 			enableZoom={true}
@@ -75,7 +75,7 @@
 		color={new Color(0xffffff)}
 	/>
 	<T.Mesh>
-		<T.SphereGeometry args={[20, 32, 32]} />
+		<T.SphereGeometry args={[100, 32, 32]} />
 		<T.ShaderMaterial
 			bind:ref={shaderMaterial}
 			uniforms={{
@@ -108,28 +108,31 @@
 		<T.PlaneGeometry args={[2, 2]} />
 		<T.MeshPhysicalMaterial color="gray" roughness={0.35} side={DoubleSide} />
 	</T.Mesh> -->
-	<T.Group rotation={[0, 0, vinilRotate]}>
-		<T.Mesh position.z={0.005} position.x={vinilX} position.y={vinilY} scale={vinilSize}>
-			<T.PlaneGeometry args={[2, 2]} />
-			<T.MeshStandardMaterial 
-				transparent 
-				map={
-					(() => { 
-						const texture = new TextureLoader().load('manantiales_1.png'); 
-						texture.center = new Vector2(0.5,0.5);
-						return texture; 
-					})()
-				}
-				clippingPlanes={planosCorte}
-				emissive={new Color(currentColor)}
-				emissiveIntensity={0.2}
-				roughness={0.1} 
-			/>
-		</T.Mesh>
-	</T.Group>
+	<TransformControls showZ={false} >
+		<T.Group rotation={[0, 0, vinilRotate]}>
+			<T.Mesh position.z={0.38} position.x={vinilX} position.y={vinilY} scale={vinilSize}>
+				<T.PlaneGeometry args={[2, 2]} />
+				<T.MeshStandardMaterial 
+					transparent 
+					map={
+						(() => { 
+							const texture = new TextureLoader().load('manantiales_1.png'); 
+							texture.center = new Vector2(0.5,0.5);
+							return texture; 
+						})()
+					}
+					clippingPlanes={planosCorte}
+					emissive={new Color(currentColor)}
+					emissiveIntensity={0.2}
+					roughness={0.1} 
+				/>
+			</T.Mesh>
+		</T.Group>
+
+	</TransformControls>
 	<!-- <T.Mesh>
-		<T.BoxGeometry args={[2,2,2]} />
-		<T.MeshStandardMaterial side={DoubleSide} color={'red'} clippingPlanes={planosCorte} />
+		<T.BoxGeometry args={[30,22,0.5]} />
+		<T.MeshStandardMaterial side={DoubleSide} color={'red'} />
 	</T.Mesh> -->
 	<Laptop13 />
 </Suspense>
