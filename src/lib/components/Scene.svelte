@@ -3,6 +3,7 @@
 	import { OrbitControls, Suspense, Text } from '@threlte/extras';
 	import { onMount } from 'svelte';
 	import { DoubleSide, Color, ShaderMaterial, type WebGLRenderer, TextureLoader, Vector3, Plane, MathUtils, Vector2 } from 'three';
+	import Laptop13 from './laptop13.svelte';
 
 	let { 
 		modelColor = 'black', 
@@ -15,10 +16,10 @@
 	let currentColor = $state(modelColor); // Estado reactivo local
 
 	let planosCorte = $state([
-		new Plane(new Vector3(0, -1, 0), 0.5),
-		new Plane(new Vector3(0, 1, 0), 0.5),
-		new Plane(new Vector3(1, 0, 0), 0.5),
-		new Plane(new Vector3(-1, 0, 0), 0.5)
+		new Plane(new Vector3(0, -1, 0), 2),
+		new Plane(new Vector3(0, 1, 0), 1.9),
+		new Plane(new Vector3(1, 0, 0), 2.8),
+		new Plane(new Vector3(-1, 0, 0), 2.8)
 	]);
 
 	let time = 0;
@@ -103,10 +104,10 @@
 			side={DoubleSide}
 		/>
 	</T.Mesh>
-	<T.Mesh>
+	<!-- <T.Mesh>
 		<T.PlaneGeometry args={[2, 2]} />
 		<T.MeshPhysicalMaterial color="gray" roughness={0.35} side={DoubleSide} />
-	</T.Mesh>
+	</T.Mesh> -->
 	<T.Group rotation={[0, 0, vinilRotate]}>
 		<T.Mesh position.z={0.005} position.x={vinilX} position.y={vinilY} scale={vinilSize}>
 			<T.PlaneGeometry args={[2, 2]} />
@@ -130,4 +131,5 @@
 		<T.BoxGeometry args={[2,2,2]} />
 		<T.MeshStandardMaterial side={DoubleSide} color={'red'} clippingPlanes={planosCorte} />
 	</T.Mesh> -->
+	<Laptop13 />
 </Suspense>

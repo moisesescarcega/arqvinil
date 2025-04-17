@@ -300,7 +300,7 @@
                 <div class="grid grid-cols-1 gap-2">
                     <Label class="mb-3">
                         Tamaño
-                        <Range id="vSize" bind:value={vinilSize} max={1.5} min={0.5} step={0.05}
+                        <Range id="vSize" bind:value={vinilSize} max={2} min={1} step={0.05}
                         on:change={() => console.log('Configurator vinilSize:', vinilSize)} />
                     </Label>
                     <Label class="mb-3">
@@ -311,11 +311,11 @@
                 <div class="grid grid-cols-1 gap-2">
                     <Label class="mb-3">
                         Posición X
-                        <Range id="vPosX" bind:value={vinilX} max={1} min={-1} step={0.1} />
+                        <Range id="vPosX" bind:value={vinilX} max={1.1} min={-1.1} step={0.1} />
                     </Label>
                     <Label class="mb-3">
                         Posición Y
-                        <Range id="vPosY" bind:value={vinilY} max={1} min={-1} step={0.1} />
+                        <Range id="vPosY" bind:value={vinilY} max={1} min={-1.5} step={0.1} />
                     </Label>
                 </div>
             </div>
