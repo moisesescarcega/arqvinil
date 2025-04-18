@@ -1,14 +1,15 @@
 <script lang="ts">
-	import { Accordion, AccordionItem, Button, Label, NumberInput, P, Range, Select, Toggle } from "flowbite-svelte";
+	import { Accordion, AccordionItem, Button, Label, NumberInput, P, Range, Select, TabItem, Tabs, Toggle } from "flowbite-svelte";
     import { itemsScale, itemsVariants, kitsVariants, kitsColores } from "./variantes";
 	import { onMount } from "svelte";
     import { cartItems } from "$lib/cartStore";
     let { 
-        modelColor = $bindable('black'),
+        modelColor = $bindable(),
         vinilSize = $bindable(),
         vinilRotation = $bindable(),
         vinilX = $bindable(),
         vinilY = $bindable(),
+        vinilMove = $bindable(),
         setViewOrder = () => {},
         preOrder = $bindable({
 			scale: "",
@@ -31,6 +32,7 @@
         vinilRotation: number,
         vinilX: number,
         vinilY: number,
+        vinilMove: boolean,
         setViewOrder: (value: boolean) => void,
         preOrder: {
             scale: string;
@@ -242,51 +244,49 @@
     };
 </script>
 <form>
-    <Accordion class="bg-white rounded-t-xl">
-        <AccordionItem open class="p-3">
-            <span slot="header" class="text-right">Configura tu paquete &nbsp;</span>
-            <div class="grid grid-cols-5 gap-2 mb-3">
-                <Label class="col-span-3">Escala:
-                    <Select 
-                        required 
-                        size="sm" 
-                        id="fescala" 
-                        placeholder="Selecciona una opción..." 
-                        items={itemsScale} 
-                        onchange={selectScale}
-                        bind:value={selectedScale}
-                    />
-                </Label>
-                {#if dcantidad}
-                <Label class="col-span-2">Cantidad de kits:
-                        <div class="flex flex-col">
-                        <Select 
-                            required 
-                            size="sm" 
-                            id="fcantidad" 
-                            placeholder="Selecciona la cantidad..." 
-                            items={quantityOptions}
-                            bind:value={cantidad}
-                            onchange={calculateFigurines}
-                        />
-                        </div>
-                </Label>
-                {/if}
-            </div>
-            <div class="grid grid-cols-5 gap-2">
-                <Label class="col-span-3">Opciones:
+    <Tabs tabStyle="full" contentClass="p-4 bg-gray-50 rounded-lg dark:bg-gray-800 mt-1">
+        <TabItem open title="Selecciona tu vinil">
+             <div id="seleccionVinil" class="w-[calc(100vw-56px)] max-w-[420px]">
+                 <Label class="h-[150px] lg:h-auto overflow-auto mb-3">
+                     <div class="grid grid-cols-1 gap-2">
+                         {#snippet values(img:string, id:number, altimg:string, value:number)}
+                             <div class="flex flex-row items-center">
+                                 <img src={img} id={`tipo-${id}`} alt={altimg} class="h-22 m-2" />
+                                 <div class="flex-col">
+                                     <P size="sm">{altimg}</P>
+                                     <NumberInput 
+                                         size="sm" 
+                                         id={`ntipo-${id}`} 
+                                         disabled={!dcantidad}
+                                         onchange={() => selectType(id)} 
+                                         min={0} 
+                                         max={20} 
+                                         value={value} 
+                                     />
+                                 </div>
+                             </div>
+                         {/snippet}
+                         {@render values("manantiales_1.png", 1, "Manantiales 1", qFiguraInicial1)}
+                         {@render values("manantiales_1.png", 2, "Manantiales 2", qFiguraInicial2)}
+                     </div>
+                 </Label>
+             </div>
+        </TabItem>
+        <TabItem>
+            <span slot="title" class="max-w-[420px] w-full lg:w-[420px]">Configura tu vinil &nbsp;</span>
+            <div class="grid grid-cols-2 gap-2">
+                <Label>
                     <div class="flex flex-row items-center m-2">
                         <Toggle
                             id="ftoggle"
-                            bind:checked={toggleKits}
-                            onchange={calculateFigurines}
+                            bind:checked={vinilMove}
                             class="mr-2"
                         >
-                            <P class="text-xs">Paquetes personalizables</P>
+                            <P class="text-sm">Mover</P>
                         </Toggle>
                     </div>
                 </Label>
-                <Label class="col-span-2">Color: <br />
+                <Label>
                     <Select 
                         id="sColor" 
                         items={kitsColores} 
@@ -297,101 +297,30 @@
                 </Label>
             </div>
             <div class="grid grid-cols-2 gap-4 mt-3">
-                <div class="grid grid-cols-1 gap-2">
+                <!-- <div class="grid grid-cols-1 gap-2"> -->
                     <Label class="mb-3">
-                        Tamaño
-                        <Range id="vSize" bind:value={vinilSize} max={15} min={5} step={0.5}
+                        Tamaño: {(vinilSize * 1.75).toFixed(1)} x {(vinilSize * 0.75).toFixed(1)}
+                        <Range id="vSize" bind:value={vinilSize} max={16} min={8} step={0.25}
                         on:change={() => console.log('Configurator vinilSize:', vinilSize)} />
                     </Label>
                     <Label class="mb-3">
-                        Rotación
+                        Rotación: {vinilRotation}°
                         <Range id="vSize" bind:value={vinilRotation} max={360} min={0} step={15} />
                     </Label>
-                </div>
-                <div class="grid grid-cols-1 gap-2">
-                    <Label class="mb-3">
-                        Posición X
-                        <Range id="vPosX" bind:value={vinilX} max={15} min={-15} step={0.5} />
-                    </Label>
-                    <Label class="mb-3">
-                        Posición Y
-                        <Range id="vPosY" bind:value={vinilY} max={20} min={-15} step={0.5} />
-                    </Label>
-                </div>
             </div>
-            <Label class="h-[150px] lg:h-auto overflow-auto mb-3">
-                {#if toggleKits}
-                <div class="grid grid-cols-1 gap-2">
-                    {#snippet values(img:string, id:number, altimg:string, value:number)}
-                        <div class="flex flex-row items-center">
-                            <img src={img} id={`tipo-${id}`} alt={altimg} class="h-22 m-2" />
-                            <div class="flex-col">
-                                <P size="sm">{altimg}</P>
-                                <NumberInput 
-                                    size="sm" 
-                                    id={`ntipo-${id}`} 
-                                    disabled={!dcantidad}
-                                    onchange={() => selectType(id)} 
-                                    min={0} 
-                                    max={20} 
-                                    value={value} 
-                                />
-                            </div>
-                        </div>
-                    {/snippet}
-                    {@render values("manantiales_1.png", 1, "Manantiales 1", qFiguraInicial1)}
-                    {@render values("manantiales_1.png", 2, "Manantiales 2", qFiguraInicial2)}
-                </div>
-                {:else}
-                <Select 
-                    required 
-                    size="sm" 
-                    id="fkit" 
-                    placeholder="Elige tu kit..." 
-                    items={kitsVariants}
-                    class="col-span-1"
-                    onchange={defineKit}
-                />
-                <div class="grid grid-cols-2 gap-2">
-                    {#snippet values(img:string, id:number, altimg:string, value:number)}
-                    <div class="flex flex-row items-center">
-                        <img src={img} id={`tipo-${id}`} alt={altimg} class="h-16 m-2" />
-                        <div class="flex-col">
-                            <P size="sm">{altimg}</P>
-                            <NumberInput size="sm" id={`ntipo-${id}`} disabled value={value} />
-                        </div>
-                    </div>
-                    {/snippet}
-                    {#if selectedKit === 'orquesta'}
-                        {@render values("mini_r0.png", 1, "orq1", 1)}
-                        {@render values("mini_r0.png", 2, "orq2", 1)}
-                        {@render values("mini_r0.png", 3, "orq3", 1)}
-                        {@render values("mini_r0.png", 4, "orq4", 1)}
-                        {@render values("mini_r0.png", 5, "orq5", 1)}
-                        {@render values("mini_r0.png", 6, "orq6", 1)}
-                        {@render values("mini_r0.png", 7, "orq7", 1)}
-                        {@render values("mini_r0.png", 8, "orq8", 1)}
-                    {:else if selectedKit === 'gym'}
-                        {@render values("mini_r0.png", 1, "gym1", 1)}
-                        {@render values("mini_r0.png", 2, "gym2", 1)}
-                        {@render values("mini_r0.png", 3, "gym3", 1)}
-                        {@render values("mini_r0.png", 4, "gym4", 1)}
-                        {@render values("mini_r0.png", 5, "gym5", 1)}
-                        {@render values("mini_r0.png", 6, "gym6", 1)}
-                    {:else if selectedKit === 'museo'}
-                        {@render values("mini_r0.png", 1, "mus1", 1)}
-                        {@render values("mini_r0.png", 2, "mus2", 1)}
-                        {@render values("mini_r0.png", 3, "mus3", 1)}
-                        {@render values("mini_r0.png", 4, "mus4", 1)}
-                        {@render values("mini_r0.png", 5, "mus5", 1)}
-                        {@render values("mini_r0.png", 6, "mus6", 1)}
-                    {/if}
-                </div>
-                {/if}
-            </Label>
-            <div class="grid grid-cols-2 gap-6">
+            <div class="grid grid-cols-3 gap-3 items-end">
+                <Label>Cantidad:
+                    <Select 
+                        required 
+                        size="sm" 
+                        id="fcantidad" 
+                        placeholder="Selecciona la cantidad..." 
+                        items={[{name: 1, value: 1}, {name: 2, value: 2}]}
+                        bind:value={cantidad}
+                    />
+                </Label>
                 <Label>Total:
-                    <P id="sumaSubtotal" size="xl" class="text-right font-bold">
+                    <P id="sumaSubtotal" size="xl" class="text-right font-bold h-[38px]">
                         {#if enabledOrder}
                         $ &nbsp;{totalFigures * costoPorFigura} MXN
                         {:else}
@@ -399,10 +328,10 @@
                         {/if}
                     </P>
                 </Label>
-                <Button class="w-full" id="addToCart" size="lg" color="blue" disabled={!enabledOrder} onclick={handleAddToCart}>
+                <Button id="addToCart" size="lg" color="blue" disabled={!enabledOrder} onclick={handleAddToCart}>
                     Añadir
                 </Button>
             </div>
-        </AccordionItem>
-    </Accordion>
+        </TabItem>
+    </Tabs>
 </form>

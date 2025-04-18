@@ -6,14 +6,14 @@
 	import Laptop13 from './laptop13.svelte';
 
 	let { 
-		modelColor = 'black', 
+		modelColor = $bindable(), 
 		vinilSize = $bindable(), 
 		vinilRotation = $bindable(),
 		vinilX = $bindable(),
-		vinilY = $bindable()
+		vinilY = $bindable(),
+		vinilMove = $bindable()
 	} = $props();
 	let vinilRotate = $derived(MathUtils.degToRad(vinilRotation));
-	let currentColor = $state(modelColor); // Estado reactivo local
 
 	let planosCorte = $state([
 		new Plane(new Vector3(0, -1, 0), 10.7), //superior
@@ -39,9 +39,6 @@
 		};
 	});
 
-	$effect(() => {
-		currentColor = modelColor; // Sincroniza cuando cambia la prop
-	});
 </script>
 
 <Suspense>
@@ -108,7 +105,7 @@
 		<T.PlaneGeometry args={[2, 2]} />
 		<T.MeshPhysicalMaterial color="gray" roughness={0.35} side={DoubleSide} />
 	</T.Mesh> -->
-	<TransformControls showZ={false} >
+	<TransformControls showZ={false} showX={vinilMove} showY={vinilMove} >
 		<T.Group rotation={[0, 0, vinilRotate]}>
 			<T.Mesh position.z={0.38} position.x={vinilX} position.y={vinilY} scale={vinilSize}>
 				<T.PlaneGeometry args={[2, 2]} />
@@ -122,7 +119,7 @@
 						})()
 					}
 					clippingPlanes={planosCorte}
-					emissive={new Color(currentColor)}
+					emissive={new Color(modelColor)}
 					emissiveIntensity={0.2}
 					roughness={0.1} 
 				/>
@@ -130,8 +127,8 @@
 		</T.Group>
 
 	</TransformControls>
-	<!-- <T.Mesh>
-		<T.BoxGeometry args={[30,22,0.5]} />
+	<!-- <T.Mesh position.y={1.3}>
+		<T.BoxGeometry args={[17.5,7.5,1.5]} />
 		<T.MeshStandardMaterial side={DoubleSide} color={'red'} />
 	</T.Mesh> -->
 	<Laptop13 />
