@@ -15,6 +15,7 @@
     let vinilX: number = $state(0);
     let vinilY: number = $state(0);
     let vinilMove: boolean = $state(false);
+    let vinilImage: number = $state(1);
     let viewOrder = $state(true);
     let defaultModal = $state(false);
     let isProcessing = $state(false);
@@ -110,6 +111,7 @@
         bind:vinilX 
         bind:vinilY
         bind:vinilMove 
+        bind:vinilImage
     />
 </Canvas>
 <section class="absolute ml-3 mr-3 lg:right-3 lg:top-[5rem] bottom-[22px] max-w-[420px]">
@@ -122,6 +124,7 @@
         bind:vinilX 
         bind:vinilY
         bind:vinilMove 
+        bind:vinilImage
     />
 </section>
 <section>

@@ -4,6 +4,7 @@
 	import { onMount } from "svelte";
     import { cartItems } from "$lib/cartStore";
     let { 
+        vinilImage = $bindable(),
         modelColor = $bindable(),
         vinilSize = $bindable(),
         vinilRotation = $bindable(),
@@ -27,6 +28,7 @@
 			costPerFigure: 0
 		})
     }: { 
+        vinilImage: number,
         modelColor: string,
         vinilSize: number,
         vinilRotation: number,
@@ -197,6 +199,10 @@
         calculateFigurines();
     };
 
+    let setVinilImage = (n: number) => {
+        vinilImage = n;
+    }
+
     // Establece las clases de las imagenes al cargar
     let classTypeOnLoad = (num: number) => {
         (document.querySelector(`#ntipo-${num}`) as HTMLSelectElement)?.value !== '0' 
@@ -250,11 +256,11 @@
                  <Label class="h-[150px] lg:h-auto overflow-auto mb-3">
                      <div class="grid grid-cols-1 gap-2">
                          {#snippet values(img:string, id:number, altimg:string, value:number)}
-                             <div class="flex flex-row items-center">
-                                 <img src={img} id={`tipo-${id}`} alt={altimg} class="h-22 m-2" />
+                             <button onclick={() => setVinilImage(id)} class="flex flex-row items-center">
+                                 <img src={img} id={`tipo-${id}`} alt={altimg} class="w-36 h-auto m-2" />
                                  <div class="flex-col">
                                      <P size="sm">{altimg}</P>
-                                     <NumberInput 
+                                     <!-- <NumberInput 
                                          size="sm" 
                                          id={`ntipo-${id}`} 
                                          disabled={!dcantidad}
@@ -262,12 +268,12 @@
                                          min={0} 
                                          max={20} 
                                          value={value} 
-                                     />
+                                     /> -->
                                  </div>
-                             </div>
+                             </button>
                          {/snippet}
                          {@render values("manantiales_1.png", 1, "Manantiales 1", qFiguraInicial1)}
-                         {@render values("manantiales_1.png", 2, "Manantiales 2", qFiguraInicial2)}
+                         {@render values("paris_1.png", 2, "París", qFiguraInicial2)}
                      </div>
                  </Label>
              </div>

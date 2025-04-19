@@ -11,9 +11,11 @@
 		vinilRotation = $bindable(),
 		vinilX = $bindable(),
 		vinilY = $bindable(),
-		vinilMove = $bindable()
+		vinilMove = $bindable(),
+		vinilImage = $bindable()
 	} = $props();
 	let vinilRotate = $derived(MathUtils.degToRad(vinilRotation));
+	let imageVinil = $state("");
 
 	let planosCorte = $state([
 		new Plane(new Vector3(0, -1, 0), 10.7), //superior
@@ -24,6 +26,16 @@
 
 	let time = 0;
 	let shaderMaterial: ShaderMaterial | undefined = $state();
+	let vinilImageSelected = (vinilImage: number) => {
+		switch (vinilImage) {
+			case 1: return "manantiales_1.png";
+			break;
+			case 2: return "paris_1.png";
+			break;
+			default: return "manantiales_1.png";
+			break;
+		};
+	}
 
 	onMount(() => {
 		const { renderer } = useThrelte() as { renderer: WebGLRenderer };
@@ -113,7 +125,7 @@
 					transparent 
 					map={
 						(() => { 
-							const texture = new TextureLoader().load('manantiales_1.png'); 
+							const texture = new TextureLoader().load(vinilImageSelected(vinilImage)); 
 							texture.center = new Vector2(0.5,0.5);
 							return texture; 
 						})()
