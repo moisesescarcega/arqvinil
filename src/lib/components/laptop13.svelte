@@ -5,11 +5,13 @@ Command: npx @threlte/gltf@3.0.1 ./static/laptop13.glb --transform --types --dra
 
 <script lang="ts">
   import type * as THREE from 'three'
+  import { MeshPhysicalMaterial } from 'three';
   import { MathUtils } from 'three';
 
   import type { Snippet } from 'svelte'
   import { T, type Props } from '@threlte/core'
   import { useGltf, useDraco } from '@threlte/extras'
+	import { color } from 'three/tsl';
 
   let {
     fallback,
@@ -41,6 +43,7 @@ Command: npx @threlte/gltf@3.0.1 ./static/laptop13.glb --transform --types --dra
       ['Material #29']: THREE.MeshStandardMaterial
     }
   }
+  let materialGris = new MeshPhysicalMaterial({color:'#222222', roughness: 0.7});
 
   const dracoLoader = useDraco();
   const gltf = useGltf<GLTFResult>('/models/laptop13-transformed.glb', {dracoLoader})
@@ -92,7 +95,7 @@ Command: npx @threlte/gltf@3.0.1 ./static/laptop13.glb --transform --types --dra
         >
           <T.Mesh
             geometry={gltf.nodes.Mesh007.geometry}
-            material={gltf.materials['corpus.001']}
+            material={materialGris}
           />
           <T.Mesh
             geometry={gltf.nodes.Mesh007_1.geometry}
