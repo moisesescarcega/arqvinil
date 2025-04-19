@@ -139,9 +139,9 @@
 		</T.Group>
 
 	</TransformControls>
-	<!-- <T.Mesh position.y={1.3}>
-		<T.BoxGeometry args={[17.5,7.5,1.5]} />
-		<T.MeshStandardMaterial side={DoubleSide} color={'red'} />
+	<!-- <T.Mesh position.y={0}>
+		<T.BoxGeometry args={[18,6,1.5]} />
+		<T.MeshStandardMaterial color={0xff0000} opacity={0.1} transparent />
 	</T.Mesh> -->
 	<Laptop13 />
 </Suspense>
