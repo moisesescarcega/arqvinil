@@ -7,19 +7,22 @@ Command: npx @threlte/gltf@3.0.1 ./static/laptop13.glb --transform --types --dra
   import type * as THREE from 'three'
   import { MeshPhysicalMaterial } from 'three';
   import { MathUtils } from 'three';
-
+  import { colorDevices } from './variantes';
   import type { Snippet } from 'svelte'
   import { T, type Props } from '@threlte/core'
   import { useGltf, useDraco } from '@threlte/extras'
-	import { color } from 'three/tsl';
 
   let {
     fallback,
     error,
     children,
     ref = $bindable(),
+    selectedDevice,
+    colorDevice,
     ...props
   }: Props<THREE.Group> & {
+    selectedDevice: number
+    colorDevice: number
     ref?: THREE.Group
     children?: Snippet<[{ ref: THREE.Group }]>
     fallback?: Snippet
@@ -43,7 +46,26 @@ Command: npx @threlte/gltf@3.0.1 ./static/laptop13.glb --transform --types --dra
       ['Material #29']: THREE.MeshStandardMaterial
     }
   }
-  let materialGris = new MeshPhysicalMaterial({color:'#222222', roughness: 0.7});
+
+  let materialGris = $derived(new MeshPhysicalMaterial({
+    color:colorDevices[colorDevice].color, 
+    roughness: colorDevices[colorDevice].roughness
+  }));
+
+  let handleDimension = (dd: number) => {
+    if (dd === 0) {
+      return 0.11;
+    } else {
+      return 0.134;
+    }
+  }
+  let handleZPosition = (dd: number) => {
+    if (dd === 0) {
+      return -10;
+    } else {
+      return -12.3;
+    }
+  }
 
   const dracoLoader = useDraco();
   const gltf = useGltf<GLTFResult>('/models/laptop13-transformed.glb', {dracoLoader})
@@ -58,8 +80,8 @@ Command: npx @threlte/gltf@3.0.1 ./static/laptop13.glb --transform --types --dra
     {@render fallback?.()}
   {:then gltf}
     <T.Group
-      position={[0, 0, -10]}
-      scale={0.11}
+      position={[0, -0.2, handleZPosition(selectedDevice)]}
+      scale={handleDimension(selectedDevice)}
       rotation.y={MathUtils.degToRad(180)}
     >
       <T.Group position={[-0.23, -94.85, 8.95]}>
@@ -112,5 +134,5 @@ Command: npx @threlte/gltf@3.0.1 ./static/laptop13.glb --transform --types --dra
     {@render error?.({ error: err })}
   {/await}
 
-  {@render children?.({ ref })}
+  {@render children?.({ ref: ref ?? {} as THREE.Group })}
 </T.Group>

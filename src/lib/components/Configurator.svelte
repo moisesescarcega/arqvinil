@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button, Label, P, Range, Select, TabItem, Tabs, Toggle } from "flowbite-svelte";
-    import { viniles, kitsColores } from "./variantes";
+    import { viniles, kitsColores, devices, colorDevices } from "./variantes";
 	import { onMount } from "svelte";
     import { cartItems } from "$lib/cartStore";
     let { 
@@ -11,6 +11,8 @@
         vinilX = $bindable(),
         vinilY = $bindable(),
         vinilMove = $bindable(),
+        selectedDevice = $bindable(),
+        colorDevice = $bindable(),
         setViewOrder = () => {},
         preOrder = $bindable({
 			scale: "",
@@ -35,6 +37,8 @@
         vinilX: number,
         vinilY: number,
         vinilMove: boolean,
+        selectedDevice: number,
+        colorDevice: number,
         setViewOrder: (value: boolean) => void,
         preOrder: {
             scale: string;
@@ -155,8 +159,7 @@
                  </Label>
              </div>
         </TabItem>
-        <TabItem>
-            <span slot="title" class="max-w-[420px] w-full lg:w-[420px]">Configura tu vinil &nbsp;</span>
+        <TabItem title="Personaliza">
             <div class="grid grid-cols-2 gap-2">
                 <Label>
                     <div class="flex flex-row items-center m-2">
@@ -182,7 +185,7 @@
             <div class="grid grid-cols-2 gap-4 mt-3">
                     <Label class="mb-3">
                         Tamaño: {((vinilSize * 0.1) * viniles[vinilImage - 1].dX).toFixed(1)} x {((vinilSize * 0.1) * viniles[vinilImage - 1].dY).toFixed(1)} cm
-                        <Range id="vSize" bind:value={vinilSize} max={16} min={8} step={0.25}
+                        <Range id="vSize" bind:value={vinilSize} max={20} min={8} step={0.25}
                         on:change={() => console.log('Configurator vinilSize:', vinilSize)} />
                     </Label>
                     <Label class="mb-3">
@@ -209,6 +212,32 @@
                 <Button id="addToCart" class="col-span-4" size="lg" color="blue" disabled={!enabledOrder} onclick={handleAddToCart}>
                     Añadir
                 </Button>
+            </div>
+        </TabItem>
+        <TabItem title="Dispositivo">
+            <div class="flex flex-row gap-2">
+                <Button>Laptop</Button>
+                <Button>Celular</Button>
+            </div>
+            <div class="flex flex-row gap-2">
+                <Label>Tamaño
+                    <Select
+                    size="sm" 
+                    id="dtamano" 
+                    placeholder="Tamaño del dispositivo" 
+                    items={devices}
+                    bind:value={selectedDevice} 
+                    />
+                </Label>
+                <Label>Color
+                    <Select
+                    size="sm" 
+                    id="dcolor" 
+                    placeholder="Color de superficie" 
+                    items={colorDevices}
+                    bind:value={colorDevice} 
+                    />
+                </Label>
             </div>
         </TabItem>
     </Tabs>

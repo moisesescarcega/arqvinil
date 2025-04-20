@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 	import { DoubleSide, Color, ShaderMaterial, type WebGLRenderer, TextureLoader, Vector3, Plane, MathUtils, Vector2 } from 'three';
 	import Laptop13 from './laptop13.svelte';
+	import { viniles, devices } from './variantes';
 
 	let { 
 		modelColor = $bindable(), 
@@ -12,30 +13,24 @@
 		vinilX = $bindable(),
 		vinilY = $bindable(),
 		vinilMove = $bindable(),
-		vinilImage = $bindable()
+		vinilImage = $bindable(),
+		selectedDevice = $bindable(),
+		colorDevice = $bindable()
 	} = $props();
 	let vinilRotate = $derived(MathUtils.degToRad(vinilRotation));
-	let imageVinil = $state("");
 
-	let planosCorte = $state([
-		new Plane(new Vector3(0, -1, 0), 10.7), //superior
-		new Plane(new Vector3(0, 1, 0), 10.3), //inferior
-		new Plane(new Vector3(1, 0, 0), 15.1), //izquierda
-		new Plane(new Vector3(-1, 0, 0), 15.1) //derecha
+	let cpY = $derived(devices[selectedDevice].clipPlaneY);
+	let cpX = $derived(devices[selectedDevice].clipPlaneX);
+
+	let planosCorte = $derived([
+		new Plane(new Vector3(0, -1, 0), cpY), //superior
+		new Plane(new Vector3(0, 1, 0), cpY), //inferior
+		new Plane(new Vector3(1, 0, 0), cpX), //izquierda
+		new Plane(new Vector3(-1, 0, 0), cpX) //derecha
 	]);
 
 	let time = 0;
 	let shaderMaterial: ShaderMaterial | undefined = $state();
-	let vinilImageSelected = (vinilImage: number) => {
-		switch (vinilImage) {
-			case 1: return "manantiales_1.png";
-			break;
-			case 2: return "paris_1.png";
-			break;
-			default: return "manantiales_1.png";
-			break;
-		};
-	}
 
 	onMount(() => {
 		const { renderer } = useThrelte() as { renderer: WebGLRenderer };
@@ -77,10 +72,10 @@
 			target.y={-0.2}
 		/>
 	</T.PerspectiveCamera>
-	<T.AmbientLight position={[0.5, 2.0, 2.0]} intensity={Math.PI / 8} />
+	<T.AmbientLight position={[0.5, 2.0, 2.0]} intensity={Math.PI / 4} />
 	<T.DirectionalLight
-		position={[2.5, 2.0, 2.0]}
-		intensity={Math.PI / 2}
+		position={[10,12,10]}
+		intensity={Math.PI}
 		color={new Color(0xffffff)}
 	/>
 	<T.Mesh>
@@ -125,7 +120,7 @@
 					transparent 
 					map={
 						(() => { 
-							const texture = new TextureLoader().load(vinilImageSelected(vinilImage)); 
+							const texture = new TextureLoader().load(viniles[vinilImage - 1].file); 
 							texture.center = new Vector2(0.5,0.5);
 							return texture; 
 						})()
@@ -139,9 +134,9 @@
 		</T.Group>
 
 	</TransformControls>
-	<!-- <T.Mesh position.y={0}>
-		<T.BoxGeometry args={[18,6,1.5]} />
-		<T.MeshStandardMaterial color={0xff0000} opacity={0.1} transparent />
+	<!-- <T.Mesh>
+		<T.BoxGeometry args={[37,26,0.2]} />
+		<T.MeshStandardMaterial color={0xff0000} opacity={0.5} transparent />
 	</T.Mesh> -->
-	<Laptop13 />
+	<Laptop13 {selectedDevice} {colorDevice} />
 </Suspense>

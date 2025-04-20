@@ -16,6 +16,8 @@
     let vinilY: number = $state(0);
     let vinilMove: boolean = $state(false);
     let vinilImage: number = $state(1);
+    let selectedDevice: number = $state(1);
+    let colorDevice: number = $state(1);
     let viewOrder = $state(true);
     let defaultModal = $state(false);
     let isProcessing = $state(false);
@@ -112,6 +114,8 @@
         bind:vinilY
         bind:vinilMove 
         bind:vinilImage
+        bind:selectedDevice
+        bind:colorDevice
     />
 </Canvas>
 <section class="absolute ml-3 mr-3 lg:right-3 lg:top-[5rem] bottom-[22px] max-w-[420px]">
@@ -125,6 +129,8 @@
         bind:vinilY
         bind:vinilMove 
         bind:vinilImage
+        bind:selectedDevice
+        bind:colorDevice
     />
 </section>
 <section>
