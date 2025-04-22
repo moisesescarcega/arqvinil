@@ -71,7 +71,7 @@
     let totalFigures = $state(0); // total de figuras
     let subtotalFigures = $state(0); // subtotal de figuras
     let selectedColor = $derived(modelColor);
-    let enabledOrder = $state(false); // el botón de agregar se habilita si se cumplen los criterios
+    let enabledOrder = $state(true); // el botón de agregar se habilita si se cumplen los criterios
     let costoPorFigura = $state(0); // costo por figura depende de la escala seleccionada, 0 por default
 
     const handleColorChange = () => {
@@ -88,7 +88,7 @@
         } else { sum = qitems};
         subtotalFigures = sum;
         totalFigures = sum * cantidad;
-        subtotalFigures >= qitems && qitems !== 0 ? enabledOrder = true : enabledOrder = false;
+        // subtotalFigures >= qitems && qitems !== 0 ? enabledOrder = true : enabledOrder = false;
     };
 
     let setVinilImage = (n: number) => {vinilImage = n;}
@@ -140,16 +140,21 @@
     };
 </script>
 <form>
-    <Tabs tabStyle="full" contentClass="p-4 bg-gray-50 rounded-lg dark:bg-gray-800 mt-1">
-        <TabItem open title="Selecciona Vinil">
-             <div id="seleccionVinil" class="w-[calc(100vw-56px)] max-w-[420px] grid grid-cols-10">
+    <Tabs 
+        tabStyle="full" 
+        contentClass="p-2 bg-gray-50 rounded-lg dark:bg-gray-800 mt-1" 
+        defaultClass='grid grid-cols-2 w-full space-x-1'
+    >
+        <TabItem open>
+            <span slot="title" id="tab1">Selecciona tu vinil</span>
+             <div id="seleccionVinil" class="w-[calc(100vw-56px)] w-full max-w-[420px] grid grid-cols-10">
                  <Label class="h-[180px] lg:h-auto overflow-auto mb-3 col-span-4">
-                     <div class="grid grid-cols-1 gap-2">
+                     <div class="grid grid-cols-1 gap-2 bg-white">
                         {#snippet values(img:string, id:number, altimg:string)}
                             <button onclick={() => setVinilImage(id)} class="flex flex-col items-center">
                                 <img src={`m_${img}`} id={`tipo-${id}`} alt={altimg} class="w-32 object-contain m-2" />
                                 <div>
-                                    <P size="sm">{altimg}</P>
+                                    <P size="sm" style="color:black">{altimg}</P>
                                 </div>
                             </button>
                         {/snippet}
@@ -158,21 +163,25 @@
                         {/each}
                      </div>
                  </Label>
-                 <div class="col-span-6">
-                     <Tabs tabStyle="underline">
+                 <div class="col-span-6 pl-2">
+                     <Tabs tabStyle="full" defaultClass='grid grid-cols-2 w-full space-x-1'>
                         <TabItem open>
                             <div slot="title" class="gap-2">
-                                <LaptopCodeOutline size="md" />
+                                Laptop
                             </div>
-                            <Button size="sm" onclick={() => selectedDevice = 0}>13"</Button>
-                            <Button size="sm" onclick={() => selectedDevice = 1}>15"</Button>
+                            <div class="w-full grid grid-cols-2 gap-2">
+                                <Button class="col-span-1" size="sm" onclick={() => selectedDevice = 0}>13"</Button>
+                                <Button class="col-span-1" size="sm" onclick={() => selectedDevice = 1}>15"</Button>
+                            </div>
                         </TabItem>
                         <TabItem>
                             <div slot="title" class="gap-2">
-                                <TabletOutline size="md" />
+                                Tablet/Cel
                             </div>
-                            <Button size="sm">iPad</Button>
-                            <Button size="sm" onclick={() => selectedDevice = 2}>Cel</Button>
+                            <div class="w-full grid grid-cols-2 gap-2">
+                                <Button class="col-span-1" size="sm" onclick={() => selectedDevice = 3}>iPad</Button>
+                                <Button class="col-span-1" size="sm" onclick={() => selectedDevice = 2}>Cel</Button>
+                            </div>
                         </TabItem>
                     </Tabs>
                     <Label class="px-2">Color de dispositivo:
@@ -187,7 +196,8 @@
                  </div>
              </div>
         </TabItem>
-        <TabItem title="Personaliza">
+        <TabItem>
+            <span slot="title">Configura tu vinil</span>
             <div class="grid grid-cols-2 gap-2">
                 <Label>
                     <div class="flex flex-row items-center m-2">

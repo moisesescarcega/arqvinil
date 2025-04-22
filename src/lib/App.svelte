@@ -134,7 +134,7 @@
     />
 </section>
 <section>
-    <button class="fixed top-[52px] z-[11] rounded-r-lg bg-primary-500 py-1" onclick={() => setViewOrder(false)}>
+    <button class="fixed top-[52px] z-[11] rounded-r-lg bg-gray-600 py-1" onclick={() => setViewOrder(false)}>
         <CaretRightSolid class="text-white" />
     </button>
     <Drawer transitionType="fly" id="orderDrawer" class="bg-blue-600/50" bind:hidden={viewOrder}>

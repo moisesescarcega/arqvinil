@@ -5,6 +5,7 @@
 	import { DoubleSide, Color, ShaderMaterial, type WebGLRenderer, TextureLoader, Vector3, Plane, MathUtils, Vector2 } from 'three';
 	import Laptop13 from './laptop13.svelte';
 	import Galaxys24 from './galaxys24.svelte';
+	import Ipad3 from './ipad3.svelte';
 	import { viniles, devices } from './variantes';
 
 	let { 
@@ -128,7 +129,7 @@
 					}
 					clippingPlanes={planosCorte}
 					emissive={new Color(modelColor)}
-					emissiveIntensity={0.2}
+					emissiveIntensity={0.4}
 					roughness={0.1} 
 				/>
 			</T.Mesh>
@@ -136,12 +137,14 @@
 
 	</TransformControls>
 	<!-- <T.Mesh>
-		<T.BoxGeometry args={[8,16,0.8]} />
+		<T.BoxGeometry args={[18.6,24,0.8]} />
 		<T.MeshStandardMaterial color={0xff0000} opacity={0.5} transparent />
 	</T.Mesh> -->
 	{#if selectedDevice === 0 || selectedDevice === 1}
 	<Laptop13 {selectedDevice} {colorDevice} />
 	{:else if selectedDevice === 2}
 	<Galaxys24 {colorDevice} />
+	{:else if selectedDevice === 3}
+	<Ipad3 {colorDevice} />
 	{/if}
 </Suspense>
