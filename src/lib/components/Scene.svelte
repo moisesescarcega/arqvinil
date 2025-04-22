@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 	import { DoubleSide, Color, ShaderMaterial, type WebGLRenderer, TextureLoader, Vector3, Plane, MathUtils, Vector2 } from 'three';
 	import Laptop13 from './laptop13.svelte';
+	import Galaxys24 from './galaxys24.svelte';
 	import { viniles, devices } from './variantes';
 
 	let { 
@@ -135,8 +136,12 @@
 
 	</TransformControls>
 	<!-- <T.Mesh>
-		<T.BoxGeometry args={[37,26,0.2]} />
+		<T.BoxGeometry args={[8,16,0.8]} />
 		<T.MeshStandardMaterial color={0xff0000} opacity={0.5} transparent />
 	</T.Mesh> -->
+	{#if selectedDevice === 0 || selectedDevice === 1}
 	<Laptop13 {selectedDevice} {colorDevice} />
+	{:else if selectedDevice === 2}
+	<Galaxys24 {colorDevice} />
+	{/if}
 </Suspense>

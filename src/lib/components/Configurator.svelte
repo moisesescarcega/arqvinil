@@ -3,6 +3,7 @@
     import { viniles, kitsColores, devices, colorDevices } from "./variantes";
 	import { onMount } from "svelte";
     import { cartItems } from "$lib/cartStore";
+	import { LaptopCodeOutline, MobilePhoneSolid, TabletOutline } from "flowbite-svelte-icons";
     let { 
         vinilImage = $bindable(),
         modelColor = $bindable(),
@@ -140,14 +141,14 @@
 </script>
 <form>
     <Tabs tabStyle="full" contentClass="p-4 bg-gray-50 rounded-lg dark:bg-gray-800 mt-1">
-        <TabItem open title="Selecciona tu vinil">
-             <div id="seleccionVinil" class="w-[calc(100vw-56px)] max-w-[420px]">
-                 <Label class="h-[150px] lg:h-auto overflow-auto mb-3">
+        <TabItem open title="Selecciona Vinil">
+             <div id="seleccionVinil" class="w-[calc(100vw-56px)] max-w-[420px] grid grid-cols-10">
+                 <Label class="h-[180px] lg:h-auto overflow-auto mb-3 col-span-4">
                      <div class="grid grid-cols-1 gap-2">
                         {#snippet values(img:string, id:number, altimg:string)}
-                            <button onclick={() => setVinilImage(id)} class="flex flex-row items-center">
-                                <img src={img} id={`tipo-${id}`} alt={altimg} class="w-36 h-auto m-2" />
-                                <div class="flex-col">
+                            <button onclick={() => setVinilImage(id)} class="flex flex-col items-center">
+                                <img src={`m_${img}`} id={`tipo-${id}`} alt={altimg} class="w-32 object-contain m-2" />
+                                <div>
                                     <P size="sm">{altimg}</P>
                                 </div>
                             </button>
@@ -157,6 +158,33 @@
                         {/each}
                      </div>
                  </Label>
+                 <div class="col-span-6">
+                     <Tabs tabStyle="underline">
+                        <TabItem open>
+                            <div slot="title" class="gap-2">
+                                <LaptopCodeOutline size="md" />
+                            </div>
+                            <Button size="sm" onclick={() => selectedDevice = 0}>13"</Button>
+                            <Button size="sm" onclick={() => selectedDevice = 1}>15"</Button>
+                        </TabItem>
+                        <TabItem>
+                            <div slot="title" class="gap-2">
+                                <TabletOutline size="md" />
+                            </div>
+                            <Button size="sm">iPad</Button>
+                            <Button size="sm" onclick={() => selectedDevice = 2}>Cel</Button>
+                        </TabItem>
+                    </Tabs>
+                    <Label class="px-2">Color de dispositivo:
+                        <Select
+                        size="sm" 
+                        id="dcolor" 
+                        placeholder="Color de superficie" 
+                        items={colorDevices}
+                        bind:value={colorDevice} 
+                        />
+                    </Label>
+                 </div>
              </div>
         </TabItem>
         <TabItem title="Personaliza">
@@ -185,7 +213,7 @@
             <div class="grid grid-cols-2 gap-4 mt-3">
                     <Label class="mb-3">
                         Tamaño: {((vinilSize * 0.1) * viniles[vinilImage - 1].dX).toFixed(1)} x {((vinilSize * 0.1) * viniles[vinilImage - 1].dY).toFixed(1)} cm
-                        <Range id="vSize" bind:value={vinilSize} max={20} min={8} step={0.25}
+                        <Range id="vSize" bind:value={vinilSize} max={20} min={6} step={0.25}
                         on:change={() => console.log('Configurator vinilSize:', vinilSize)} />
                     </Label>
                     <Label class="mb-3">
@@ -205,39 +233,13 @@
                     />
                 </Label>
                 <Label class="col-span-4 justify-items-end-safe">Total:
-                    <P id="sumaSubtotal" size="xl" class="text-right font-bold h-[38px]">
+                    <P id="sumaSubtotal" size="lg" class="text-right font-bold h-[38px]">
                         $ &nbsp;{(vinilSize * 10).toFixed(2)} MXN
                     </P>
                 </Label>
                 <Button id="addToCart" class="col-span-4" size="lg" color="blue" disabled={!enabledOrder} onclick={handleAddToCart}>
                     Añadir
                 </Button>
-            </div>
-        </TabItem>
-        <TabItem title="Dispositivo">
-            <div class="flex flex-row gap-2">
-                <Button>Laptop</Button>
-                <Button>Celular</Button>
-            </div>
-            <div class="flex flex-row gap-2">
-                <Label>Tamaño
-                    <Select
-                    size="sm" 
-                    id="dtamano" 
-                    placeholder="Tamaño del dispositivo" 
-                    items={devices}
-                    bind:value={selectedDevice} 
-                    />
-                </Label>
-                <Label>Color
-                    <Select
-                    size="sm" 
-                    id="dcolor" 
-                    placeholder="Color de superficie" 
-                    items={colorDevices}
-                    bind:value={colorDevice} 
-                    />
-                </Label>
             </div>
         </TabItem>
     </Tabs>

@@ -47,9 +47,10 @@ Command: npx @threlte/gltf@3.0.1 ./static/laptop13.glb --transform --types --dra
     }
   }
 
-  let materialGris = $derived(new MeshPhysicalMaterial({
+  let materialSuperficie = $derived(new MeshPhysicalMaterial({
     color:colorDevices[colorDevice].color, 
-    roughness: colorDevices[colorDevice].roughness
+    roughness: colorDevices[colorDevice].roughness,
+    metalness: colorDevices[colorDevice].metalness
   }));
 
   let handleDimension = (dd: number) => {
@@ -117,7 +118,7 @@ Command: npx @threlte/gltf@3.0.1 ./static/laptop13.glb --transform --types --dra
         >
           <T.Mesh
             geometry={gltf.nodes.Mesh007.geometry}
-            material={materialGris}
+            material={materialSuperficie}
           />
           <T.Mesh
             geometry={gltf.nodes.Mesh007_1.geometry}
