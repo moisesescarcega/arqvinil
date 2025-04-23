@@ -1,7 +1,6 @@
 import { writable } from "svelte/store";
 export interface CartItem {
     id: string;
-    // color: string;
     order: {
         totalAmount: number;
         totalViniles: number;

@@ -51,6 +51,7 @@
 		]
 	},
 	"dependencies": {
+		"@supabase/supabase-js": "^2.49.4",
 		"@threlte/core": "^8.0.2",
 		"@threlte/extras": "^9.1.3",
 		"@types/three": "^0.175.0",

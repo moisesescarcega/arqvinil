@@ -26,7 +26,7 @@ export function generateOrderPDF(items: CartItem[], totalAmount: number, orderId
   // Iterar sobre cada elemento del carrito
   items.forEach((item, index) => {
     // Verificar si hay espacio suficiente en la página actual
-    if (yPosition > 250) {
+    if (yPosition > 200) {
       doc.addPage();
       yPosition = 20;
     }
@@ -39,18 +39,7 @@ export function generateOrderPDF(items: CartItem[], totalAmount: number, orderId
     doc.text(`Diseño: ${item.order.selectedVinil} | Color: ${item.order.vinilColor} | Cantidad: ${item.order.totalViniles}`, 20, yPosition);
     yPosition += 7;
     
-    // if ('kit' in item.order.figures && item.order.figures.kit) {
-    //   doc.text(`Kit predefinido: ${item.order.figures.kit}`, 20, yPosition);
-    //   yPosition += 7;
-    // } else {
-    //   doc.text(`Figuras: ${('standing_man' in item.order.figures) ? `Hombre de pie: ${item.order.figures.standing_man}, ` : ''}` +
-    //           `${('standing_woman' in item.order.figures) ? `Mujer de pie: ${item.order.figures.standing_woman}, ` : ''}` +
-    //           `${('sitting' in item.order.figures) ? `Sentado: ${item.order.figures.sitting}, ` : ''}` +
-    //           `${('walking' in item.order.figures) ? `Caminando: ${item.order.figures.walking}` : ''}`, 20, yPosition);
-    //   yPosition += 7;
-    // }
-    
-    doc.text(`Dimensiones: ${item.order.vinilDimensions}`, 20, yPosition);
+    doc.text(`Dimensiones: ${item.order.vinilDimensions} cm`, 20, yPosition);
     yPosition += 7;
     
     doc.text(`Subtotal: $${item.order.totalAmount.toFixed(2)} MXN`, 20, yPosition);
@@ -66,14 +55,25 @@ export function generateOrderPDF(items: CartItem[], totalAmount: number, orderId
   doc.setFont('helvetica', 'bold');
   doc.text(`Total: $${totalAmount.toFixed(2)} MXN`, 150, yPosition);
   
+  // Configurar contenido extra
+  doc.setFontSize(12);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`Depósito a la cuenta: Banco Santander, a nombre de Moisés Alonso Escárcega Olivares,`, 20, yPosition + 16);
+  doc.text(`CLABE: 014180605800654909 Envía este documento junto con tu voucher al correo:`, 20, yPosition + 22);
+  doc.text(`moi.escarcega@outlook.es | Espera respuesta, para programar la entrega en`, 20, yPosition + 28);
+  doc.text(`el vestíbulo de la Facultad de Arquitectura (1 a 2 días después de tu pedido)`, 20, yPosition + 34);
+  doc.setFontSize(10);
+  doc.text(`* Puedes depositar el total del monto, o una parcialidad que prefieras.`, 20, yPosition + 42);
+  doc.text(`O indicarme en el mail si prefieres pago contra entrega. ¡Gracias por tu compra!`, 20, yPosition + 47);
+  
   // Configurar pie de página
-//   const pageCount = doc.internal.getNumberOfPages();
-//   for (let i = 1; i <= pageCount; i++) {
-//     doc.setPage(i);
-//     doc.setFontSize(10);
-//     doc.setFont('helvetica', 'normal');
-//     doc.text(`Página ${i} de ${pageCount}`, 105, 290, { align: "center" });
-//   }
+  const pageCount = doc.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Personaliza con vinil. Sistema creado por Moisés Escárcega. Página ${i} de ${pageCount}`, 105, 290, { align: "center" });
+  }
   
   return doc;
 }

@@ -12,6 +12,7 @@
         vinilMove = $bindable(),
         selectedDevice = $bindable(),
         colorDevice = $bindable(),
+        configCamera = $bindable(),
         setViewOrder = () => {},
         preOrder = $bindable({
 			totalAmount: 0,
@@ -30,6 +31,7 @@
         vinilMove: boolean,
         selectedDevice: number,
         colorDevice: number,
+        configCamera: boolean,
         setViewOrder: (value: boolean) => void,
         preOrder: {
             totalAmount: number;
@@ -47,6 +49,10 @@
 
     const handleColorChange = () => {
         modelColor = selectedColor;
+    }
+
+    const handleConfigCamera = (bol: boolean) => {
+        configCamera = bol
     }
 
     let setVinilImage = (n: number) => {vinilImage = n;}
@@ -74,10 +80,10 @@
         contentClass="p-2 bg-gray-50 rounded-lg dark:bg-gray-800 mt-1" 
         defaultClass='grid grid-cols-2 w-full space-x-1'
     >
-        <TabItem open>
+        <TabItem open onclick={() => handleConfigCamera(false)}>
             <span slot="title" id="tab1">Selecciona tu vinil</span>
              <div id="seleccionVinil" class="w-[calc(100vw-56px)] w-full max-w-[420px] grid grid-cols-10">
-                 <Label class="h-[180px] lg:h-auto overflow-auto mb-3 col-span-4">
+                 <Label class="h-[180px] lg:h-auto overflow-auto col-span-4">
                      <div class="grid grid-cols-1 gap-2 bg-white">
                         {#snippet values(img:string, id:number, altimg:string)}
                             <button onclick={() => setVinilImage(id)} class="flex flex-col items-center">
@@ -93,6 +99,7 @@
                      </div>
                  </Label>
                  <div class="col-span-6 pl-2">
+                    <Label class="mb-2">Elige un dispositivo para probar:</Label>
                      <Tabs tabStyle="full" defaultClass='grid grid-cols-2 w-full space-x-1'>
                         <TabItem open>
                             <div slot="title" class="gap-2">
@@ -113,8 +120,9 @@
                             </div>
                         </TabItem>
                     </Tabs>
-                    <Label class="px-2">Color de dispositivo:
+                    <Label>Color de dispositivo:
                         <Select
+                        class="mt-1"
                         size="sm" 
                         id="dcolor" 
                         placeholder="Color de superficie" 
@@ -125,7 +133,7 @@
                  </div>
              </div>
         </TabItem>
-        <TabItem>
+        <TabItem onclick={() => handleConfigCamera(true)}>
             <span slot="title">Configura tu vinil</span>
             <div class="grid grid-cols-2 gap-2">
                 <Label>

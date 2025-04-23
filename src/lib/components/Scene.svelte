@@ -17,7 +17,8 @@
 		vinilMove = $bindable(),
 		vinilImage = $bindable(),
 		selectedDevice = $bindable(),
-		colorDevice = $bindable()
+		colorDevice = $bindable(),
+		configCamera = $bindable()
 	} = $props();
 	let vinilRotate = $derived(MathUtils.degToRad(vinilRotation));
 
@@ -50,7 +51,7 @@
 		};
 	});
 
-	let rotationGroupZ = $derived(Math.sin(cameraAngle));
+	let rotationGroupZ = $derived(() => configCamera ? 0 : Math.sin(cameraAngle));
 
 </script>
 
@@ -118,7 +119,7 @@
 		<T.PlaneGeometry args={[2, 2]} />
 		<T.MeshPhysicalMaterial color="gray" roughness={0.35} side={DoubleSide} />
 	</T.Mesh> -->
-	<T.Group rotation={[0, rotationGroupZ, 0]}>
+	<T.Group rotation={[0, rotationGroupZ(), 0]}>
 		<TransformControls showZ={false} showX={vinilMove} showY={vinilMove} >
 			<T.Group rotation={[0, 0, vinilRotate]}>
 				<T.Mesh position.z={0.38} position.x={vinilX} position.y={vinilY} scale={vinilSize}>

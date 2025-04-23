@@ -7,6 +7,7 @@
     import { cartItems } from "./cartStore";
     import type { CartItem } from './cartStore';
     import { downloadOrderPDF } from "./pdfService";
+    import { onMount } from "svelte";
     // import { saveOrderToSupabase } from "./supabaseService";
 
     let items: any[] = $state([]);
@@ -19,6 +20,7 @@
     let vinilImage: number = $state(1);
     let selectedDevice: number = $state(1);
     let colorDevice: number = $state(1);
+    let configCamera: boolean = $state(false);
     let viewOrder = $state(true);
     let defaultModal = $state(false);
     let isProcessing = $state(false);
@@ -36,23 +38,46 @@
     });
 
     let totalAmount = $state(0);
+    let dailyLimitReached = $state(false);
     cartItems.subscribe(value => { 
         items = value;
         calculateTotal(); 
     });
 
+    onMount(async () => {
+        await checkDailyLimit();
+    });
+
+    async function checkDailyLimit() {
+        try {
+            const response = await fetch('/api/orders');
+            const data = await response.json();
+            if (response.ok) {
+                dailyLimitReached = data.limitReached;
+            } else {
+                console.error('Error checking daily limit:', data.error);
+                // Optionally handle the error, maybe disable the button as a fallback
+                dailyLimitReached = true;
+            }
+        } catch (error) {
+            console.error('Error fetching daily limit:', error);
+            // Optionally handle the error, maybe disable the button as a fallback
+            dailyLimitReached = true;
+        }
+    }
+
     function calculateTotal() {
         totalAmount = items.reduce((sum, item) => sum + item.order.totalAmount, 0);
     };
 
-    async function saveOrderPreview(items: CartItem[], totalAmount: number, orderId: string) { //sustituir por funcion db
-        try {
-            return { success: true, orderId: 0 };
-        } catch (error) {
-            console.error('Error saving order to Supabase:', error);
-            return { success: false, error };
-        }
-    }
+    // async function saveOrderPreview(items: CartItem[], totalAmount: number, orderId: string) { //sustituir por funcion db
+    //     try {
+    //         return { success: true, orderId: 0 };
+    //     } catch (error) {
+    //         console.error('Error saving order to Supabase:', error);
+    //         return { success: false, error };
+    //     }
+    // }
 
     function removeItem(id: string) {
         cartItems.update(items => items.filter(item => item.id !== id));
@@ -64,14 +89,28 @@
             orderSavedSuccess = false;
             orderError = "";
             orderId = `ORD-${Date.now()}`;
-            // const result = await saveOrderToSupabase(items, totalAmount, orderId);
-            const result = await saveOrderPreview(items, totalAmount, orderId);
-            if (result.success) {
+            const response = await fetch('/api/orders', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    items: items,
+                    totalAmount: totalAmount,
+                    orderId: orderId // Pass the generated orderId
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
                 orderSavedSuccess = true;
                 pdfGenerated = true;
-                console.log("Order ID:", orderId);
+                console.log("Order ID:", result.orderId);
+                // After successful order, re-check the daily limit
+                await checkDailyLimit();
             } else {
-                orderError = "Error al guardar en base de datos";
+                orderError = result.error || "Error al guardar en base de datos";
                 console.error(result.error);
             };
         } catch (error) {
@@ -96,6 +135,7 @@
         pdfGenerated = false;
         orderSavedSuccess = false;
         orderError = "";
+        checkDailyLimit();
     };
 
     const setViewOrder = (value: boolean) => {
@@ -119,6 +159,7 @@
         bind:vinilImage
         bind:selectedDevice
         bind:colorDevice
+        bind:configCamera
     />
 </Canvas>
 <section class="absolute ml-3 mr-3 lg:right-3 lg:top-[5rem] bottom-[22px] max-w-[420px]">
@@ -134,6 +175,7 @@
         bind:vinilImage
         bind:selectedDevice
         bind:colorDevice
+        bind:configCamera
     />
 </section>
 <section>
@@ -177,15 +219,15 @@
             {#if orderSavedSuccess}
                 <P weight="bold" class="text-green-800 dark:text-gray-900">¡Orden enviada con éxito!</P>
                 <P class="text-green-700 dark:text-gray-900">Tu número de pedido es: <br /> {orderId}</P>
-                
+                <P class="text-green-700 dark:text-gray-900">Descarga el PDF con los detalles para la entrega y pago.</P>
                 {#if pdfGenerated}
                     <Button class="mt-2" color="blue" onclick={downloadPDF}>
                         Descargar PDF
                     </Button>
                 {/if}
             {:else if orderError}
-                <P weight="bold" class="text-red-800">Error al procesar la orden</P>
-                <P class="text-red-700">{orderError}</P>
+                <P weight="bold" class="text-red-800 dark:text-gray-900">Error al procesar la orden</P>
+                <P class="text-red-700 dark:text-gray-900">{orderError}</P>
                 <Button class="mt-2" color="blue" onclick={submitOrder}>
                     Intentar nuevamente
                 </Button>
@@ -200,12 +242,16 @@
             <Button color="alternative" class="mr-2" onclick={() => defaultModal = false}>
                 Cancelar
             </Button>
-            <Button id="submitOrderFinal" color="blue" onclick={submitOrder} disabled={isProcessing}>
+            <Button id="submitOrderFinal" color="blue" onclick={submitOrder} disabled={isProcessing || dailyLimitReached}>
                 {#if isProcessing}
                     <Spinner size="sm" class="mr-2" />
                     Procesando...
                 {:else}
+                    {#if dailyLimitReached}
+                    No hay más pedidos por hoy <br /> Intenta mañana por favor
+                    {:else}
                     Confirmar pedido
+                    {/if}
                 {/if}
             </Button>
         </div>

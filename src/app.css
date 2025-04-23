@@ -33,3 +33,7 @@ canvas {
 button[role=tab] {
   padding: 6px;
 }
+
+button[aria-label="Close modal"] {
+  display: none;
+}

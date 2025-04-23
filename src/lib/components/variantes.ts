@@ -1,6 +1,7 @@
 export const viniles = [
-    { name: "Manantiales", value: 1, file: "manantiales_1.png", dX: 18, dY: 6 },
-    { name: "Paris", value: 2, file: "paris_1.png", dX: 24, dY: 10 }
+    { name: "Manantiales", value: 1, file: "manantiales_1.png", dX: 24, dY: 8 },
+    { name: "Paris", value: 2, file: "paris_1.png", dX: 24, dY: 10 },
+    { name: "Mapamundi", value: 3, file: "mapa_1.png", dX: 26, dY: 18 }
 ]
 export const devices = [
     { name: "Laptop 13in", value: 0, clipPlaneX: 15.1, clipPlaneY: 10.5},
