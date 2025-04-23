@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button, Label, P, Range, Select, TabItem, Tabs, Toggle } from "flowbite-svelte";
-    import { viniles, kitsColores, devices, colorDevices } from "./variantes";
+    import { viniles, kitsColores, colorDevices } from "./variantes";
     import { cartItems } from "$lib/cartStore";
     let { 
         vinilImage = $bindable(),
@@ -44,8 +44,6 @@
     let cantidad = $state(1); // cantidad de kits
     let selectedColor = $derived(modelColor);
     let enabledOrder = $state(true); // el botón de agregar se habilita si se cumplen los criterios
-    const colorName = kitsColores.find(color => color.value === modelColor)?.name || modelColor;
-    const vinilName = viniles.find(vinil => vinil.value === vinilImage)?.name || vinilImage;
 
     const handleColorChange = () => {
         modelColor = selectedColor;
@@ -58,6 +56,8 @@
     let setVinilImage = (n: number) => {vinilImage = n;}
 
     const handleAddToCart = () => {
+        const colorName = kitsColores.find(color => color.value === modelColor)?.name || modelColor;
+        const vinilName = viniles.find(vinil => vinil.value === vinilImage)?.name || vinilImage;
         preOrder = {
             totalAmount: vinilSize * cantidad * 10,
             totalViniles: cantidad,

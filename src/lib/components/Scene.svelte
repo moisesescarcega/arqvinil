@@ -115,10 +115,6 @@
 			side={DoubleSide}
 		/>
 	</T.Mesh>
-	<!-- <T.Mesh>
-		<T.PlaneGeometry args={[2, 2]} />
-		<T.MeshPhysicalMaterial color="gray" roughness={0.35} side={DoubleSide} />
-	</T.Mesh> -->
 	<T.Group rotation={[0, rotationGroupZ(), 0]}>
 		<TransformControls showZ={false} showX={vinilMove} showY={vinilMove} >
 			<T.Group rotation={[0, 0, vinilRotate]}>

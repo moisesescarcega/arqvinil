@@ -5,10 +5,8 @@
     import { Button, Card, Drawer, Modal, P, Spinner } from "flowbite-svelte";
     import { CaretRightSolid } from "flowbite-svelte-icons";
     import { cartItems } from "./cartStore";
-    import type { CartItem } from './cartStore';
     import { downloadOrderPDF } from "./pdfService";
     import { onMount } from "svelte";
-    // import { saveOrderToSupabase } from "./supabaseService";
 
     let items: any[] = $state([]);
     let modelColor: string = $state("black");
@@ -69,15 +67,6 @@
     function calculateTotal() {
         totalAmount = items.reduce((sum, item) => sum + item.order.totalAmount, 0);
     };
-
-    // async function saveOrderPreview(items: CartItem[], totalAmount: number, orderId: string) { //sustituir por funcion db
-    //     try {
-    //         return { success: true, orderId: 0 };
-    //     } catch (error) {
-    //         console.error('Error saving order to Supabase:', error);
-    //         return { success: false, error };
-    //     }
-    // }
 
     function removeItem(id: string) {
         cartItems.update(items => items.filter(item => item.id !== id));
