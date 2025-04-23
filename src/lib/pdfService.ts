@@ -36,7 +36,7 @@ export function generateOrderPDF(items: CartItem[], totalAmount: number, orderId
     yPosition += 10;
     
     doc.setFontSize(10);
-    doc.text(`Diseño: ${item.order.selectedVinil} | Color: ${item.color} | Cantidad: ${item.order.totalViniles}`, 20, yPosition);
+    doc.text(`Diseño: ${item.order.selectedVinil} | Color: ${item.order.vinilColor} | Cantidad: ${item.order.totalViniles}`, 20, yPosition);
     yPosition += 7;
     
     // if ('kit' in item.order.figures && item.order.figures.kit) {

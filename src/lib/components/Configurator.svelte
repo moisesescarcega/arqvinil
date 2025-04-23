@@ -16,7 +16,7 @@
         preOrder = $bindable({
 			totalAmount: 0,
             totalViniles: 0,
-            selectedVinil: 0,
+            selectedVinil: "",
             vinilDimensions: "",
             vinilColor: "black"
 		})
@@ -34,7 +34,7 @@
         preOrder: {
             totalAmount: number;
             totalViniles: number;
-            selectedVinil: number;
+            selectedVinil: string;
             vinilDimensions: string;
             vinilColor: string;
         }
@@ -42,6 +42,7 @@
     let cantidad = $state(1); // cantidad de kits
     let selectedColor = $derived(modelColor);
     let enabledOrder = $state(true); // el botón de agregar se habilita si se cumplen los criterios
+    const colorName = kitsColores.find(color => color.value === modelColor)?.name || modelColor;
 
     const handleColorChange = () => {
         modelColor = selectedColor;
@@ -53,9 +54,9 @@
         preOrder = {
             totalAmount: vinilSize * cantidad * 10,
             totalViniles: cantidad,
-            selectedVinil: vinilImage,
+            selectedVinil: viniles[vinilImage].name,
             vinilDimensions: ((vinilSize * 0.1) * viniles[vinilImage - 1].dX).toFixed(1).toString().concat(" x ", ((vinilSize * 0.1) * viniles[vinilImage - 1].dY).toFixed(1).toString()),
-            vinilColor: modelColor
+            vinilColor: colorName
         };
         setViewOrder(false);
         const newItem = {
