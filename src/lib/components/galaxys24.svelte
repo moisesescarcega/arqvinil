@@ -86,7 +86,7 @@ Command: npx @threlte/gltf@3.0.1 ./static/galaxys24.glb --draco --transform --ty
 <T.Group
   bind:ref
   dispose={false}
-  position.z={-0.3}
+  position.z={-0.27}
   position.x={0.2}
   scale={100}
   {...props}

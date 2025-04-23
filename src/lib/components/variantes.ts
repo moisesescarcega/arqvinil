@@ -5,7 +5,7 @@ export const viniles = [
 export const devices = [
     { name: "Laptop 13in", value: 0, clipPlaneX: 15.1, clipPlaneY: 10.5},
     { name: "Laptop 15in", value: 1, clipPlaneX: 18.5, clipPlaneY: 13},
-    { name: "Smartphone", value: 2, clipPlaneX: 3.75, clipPlaneY: 7.75},
+    { name: "Smartphone", value: 2, clipPlaneX: 3.6, clipPlaneY: 7.75},
     { name: "Tablet", value: 3, clipPlaneX: 9.2, clipPlaneY: 12}
 ]
 export const colorDevices = [

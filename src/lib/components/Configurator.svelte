@@ -43,6 +43,7 @@
     let selectedColor = $derived(modelColor);
     let enabledOrder = $state(true); // el botón de agregar se habilita si se cumplen los criterios
     const colorName = kitsColores.find(color => color.value === modelColor)?.name || modelColor;
+    const vinilName = viniles.find(vinil => vinil.value === vinilImage)?.name || vinilImage;
 
     const handleColorChange = () => {
         modelColor = selectedColor;
@@ -54,7 +55,7 @@
         preOrder = {
             totalAmount: vinilSize * cantidad * 10,
             totalViniles: cantidad,
-            selectedVinil: viniles[vinilImage].name,
+            selectedVinil: vinilName.toString(),
             vinilDimensions: ((vinilSize * 0.1) * viniles[vinilImage - 1].dX).toFixed(1).toString().concat(" x ", ((vinilSize * 0.1) * viniles[vinilImage - 1].dY).toFixed(1).toString()),
             vinilColor: colorName
         };

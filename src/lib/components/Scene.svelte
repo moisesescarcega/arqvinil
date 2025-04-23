@@ -33,6 +33,7 @@
 
 	let time = 0;
 	let shaderMaterial: ShaderMaterial | undefined = $state();
+	let cameraAngle = $state(0);
 
 	onMount(() => {
 		const { renderer } = useThrelte() as { renderer: WebGLRenderer };
@@ -43,10 +44,13 @@
 
 	useTask((delta: number) => {
 		time += delta;
+		cameraAngle = Math.sin(time * 0.5) * (Math.PI / 18);
 		if (shaderMaterial) {
 			(shaderMaterial as ShaderMaterial).uniforms.uTime.value = time;
 		};
 	});
+
+	let rotationGroupZ = $derived(Math.sin(cameraAngle));
 
 </script>
 
@@ -114,37 +118,39 @@
 		<T.PlaneGeometry args={[2, 2]} />
 		<T.MeshPhysicalMaterial color="gray" roughness={0.35} side={DoubleSide} />
 	</T.Mesh> -->
-	<TransformControls showZ={false} showX={vinilMove} showY={vinilMove} >
-		<T.Group rotation={[0, 0, vinilRotate]}>
-			<T.Mesh position.z={0.38} position.x={vinilX} position.y={vinilY} scale={vinilSize}>
-				<T.PlaneGeometry args={[2, 2]} />
-				<T.MeshStandardMaterial 
-					transparent 
-					map={
-						(() => { 
-							const texture = new TextureLoader().load(viniles[vinilImage - 1].file); 
-							texture.center = new Vector2(0.5,0.5);
-							return texture; 
-						})()
-					}
-					clippingPlanes={planosCorte}
-					emissive={new Color(modelColor)}
-					emissiveIntensity={0.4}
-					roughness={0.1} 
-				/>
-			</T.Mesh>
-		</T.Group>
-
-	</TransformControls>
-	<!-- <T.Mesh>
-		<T.BoxGeometry args={[18.6,24,0.8]} />
-		<T.MeshStandardMaterial color={0xff0000} opacity={0.5} transparent />
-	</T.Mesh> -->
-	{#if selectedDevice === 0 || selectedDevice === 1}
-	<Laptop13 {selectedDevice} {colorDevice} />
-	{:else if selectedDevice === 2}
-	<Galaxys24 {colorDevice} />
-	{:else if selectedDevice === 3}
-	<Ipad3 {colorDevice} />
-	{/if}
+	<T.Group rotation={[0, rotationGroupZ, 0]}>
+		<TransformControls showZ={false} showX={vinilMove} showY={vinilMove} >
+			<T.Group rotation={[0, 0, vinilRotate]}>
+				<T.Mesh position.z={0.38} position.x={vinilX} position.y={vinilY} scale={vinilSize}>
+					<T.PlaneGeometry args={[2, 2]} />
+					<T.MeshStandardMaterial 
+						transparent 
+						map={
+							(() => { 
+								const texture = new TextureLoader().load(viniles[vinilImage - 1].file); 
+								texture.center = new Vector2(0.5,0.5);
+								return texture; 
+							})()
+						}
+						clippingPlanes={planosCorte}
+						emissive={new Color(modelColor)}
+						emissiveIntensity={0.4}
+						roughness={0.1} 
+					/>
+				</T.Mesh>
+			</T.Group>
+	
+		</TransformControls>
+		<!-- <T.Mesh>
+			<T.BoxGeometry args={[18.6,24,0.8]} />
+			<T.MeshStandardMaterial color={0xff0000} opacity={0.5} transparent />
+		</T.Mesh> -->
+		{#if selectedDevice === 0 || selectedDevice === 1}
+		<Laptop13 {selectedDevice} {colorDevice} />
+		{:else if selectedDevice === 2}
+		<Galaxys24 {colorDevice} />
+		{:else if selectedDevice === 3}
+		<Ipad3 {colorDevice} />
+		{/if}
+	</T.Group>
 </Suspense>

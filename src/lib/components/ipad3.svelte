@@ -60,7 +60,7 @@ Command: npx @threlte/gltf@3.0.1 ./static/ipad3.glb --draco --transform --types
   bind:ref
   dispose={false}
   scale={74}
-  position.z={-0.2}
+  position.z={-0.15}
   position.x={0.16}
   position.y={0.2}
   {...props}
