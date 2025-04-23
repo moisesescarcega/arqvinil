@@ -30,7 +30,7 @@
     let preOrder = $state({
         totalAmount: 0,
         totalViniles: 0,
-        selectedVinil: 0,
+        selectedVinil: "",
         vinilDimensions: "",
         vinilColor: "black"
     });
