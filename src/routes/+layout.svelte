@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 	import Header from '$lib/Header.svelte';
+	import { P } from 'flowbite-svelte';
 
 	let { children } = $props();
 </script>
@@ -9,7 +10,7 @@
 	<main class="mx-auto w-full h-full">
 		{@render children()}
 	</main>
-	<footer class="bg-gray-800 text-white text-center fixed bottom-0 w-full h-[22px]">
-		<p>&copy; 2025 maquetas.xyz</p>
+	<footer class="bg-gray-800 text-white fixed bottom-0 w-full h-[22px]">
+		<P size="sm" align="center">&copy; 2025 arqvinil.vercel.app | hecho por <a href="https://mescarcega.vercel.app/">mescarcega</a></P>
 	</footer>
 </div>

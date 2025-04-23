@@ -27,19 +27,11 @@
     let orderError = $state("");
     let cerrarDisabled = $state(true);
     let preOrder = $state({
-        scale: "",
-        kits: 0,
-        figures: {
-            standing_man: 0,
-            standing_woman: 0,
-            sitting: 0,
-            walking: 0,
-            kit: undefined
-        },
-        figuresPerKit: 0,
-        totalFigures: 0,
         totalAmount: 0,
-        costPerFigure: 0
+        totalViniles: 0,
+        selectedVinil: 0,
+        vinilDimensions: "",
+        vinilColor: "black"
     });
 
     let totalAmount = $state(0);
@@ -142,13 +134,10 @@
         {#each items as item}
         <Card class="my-2" id={`card-${item.id}`}>
             <P size="sm" align="right">Conjunto #: ... {item.id.slice(-6)}</P>
-            <P>Escala: {item.order.scale}</P>
-            <P>Color: {item.color}</P>
-            {#if item.order.figures.kit}
-            <P>Kit predefinido: {item.order.figures.kit}</P>
-            {/if}
-            <P>Cantidad de Kits: {item.order.kits}</P>
-            <P>Total de escalas: {item.order.totalFigures}</P>
+            <P>Diseño: {item.order.selectedVinil}</P>
+            <P>Color: {item.order.vinilColor}</P>
+            <P>Cantidad: {item.order.totalViniles}</P>
+            <P>Dimensiones: {item.order.vinilDimensions}</P>
             <P weight="bold" align="right">Subtotal: {item.order.totalAmount}
                 &nbsp;<Button color="red" class="float-right mx-2" size="xs" onclick={() => removeItem(item.id)}>x</Button>
             </P>
