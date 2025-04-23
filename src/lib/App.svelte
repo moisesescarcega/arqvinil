@@ -5,6 +5,7 @@
     import { Button, Card, Drawer, Modal, P, Spinner } from "flowbite-svelte";
     import { CaretRightSolid } from "flowbite-svelte-icons";
     import { cartItems } from "./cartStore";
+    import type { CartItem } from './cartStore';
     import { downloadOrderPDF } from "./pdfService";
     // import { saveOrderToSupabase } from "./supabaseService";
 
@@ -44,6 +45,15 @@
         totalAmount = items.reduce((sum, item) => sum + item.order.totalAmount, 0);
     };
 
+    async function saveOrderPreview(items: CartItem[], totalAmount: number, orderId: string) { //sustituir por funcion db
+        try {
+            return { success: true, orderId: 0 };
+        } catch (error) {
+            console.error('Error saving order to Supabase:', error);
+            return { success: false, error };
+        }
+    }
+
     function removeItem(id: string) {
         cartItems.update(items => items.filter(item => item.id !== id));
     };
@@ -55,14 +65,15 @@
             orderError = "";
             orderId = `ORD-${Date.now()}`;
             // const result = await saveOrderToSupabase(items, totalAmount, orderId);
-            // if (result.success) {
-            //     orderSavedSuccess = true;
-            //     pdfGenerated = true;
-            //     console.log("Order ID:", orderId);
-            // } else {
-            //     orderError = "Error al guardar en base de datos";
-            //     console.error(result.error);
-            // };
+            const result = await saveOrderPreview(items, totalAmount, orderId);
+            if (result.success) {
+                orderSavedSuccess = true;
+                pdfGenerated = true;
+                console.log("Order ID:", orderId);
+            } else {
+                orderError = "Error al guardar en base de datos";
+                console.error(result.error);
+            };
         } catch (error) {
             console.error("Error processing order:", error);
             // alert("Error processing your order. Please try again.");
@@ -154,17 +165,8 @@
     <div class="h-[350px] overflow-auto">
         {#each items as item}
             <P>Orden {item.id}</P>
-            <P>Escala: {item.order.scale}; Color: {item.color}; Cantidad: {item.order.kits} kits;</P>
-            {#if item.order.figures.kit}
-            <P>Kit predefinido: {item.order.figures.kit}</P>
-            <P>Total de escalas: {item.order.totalFigures}; Costo por unidad: ${item.order.costPerFigure} MXN; 
-                Subtotal: ${item.order.totalAmount} MXN
-            </P>
-            {:else}
-            <P>Total de escalas: {item.order.totalFigures}; Costo por unidad: ${item.order.costPerFigure} MXN; 
-                Subtotal: ${item.order.totalAmount} MXN
-            </P>
-            {/if}
+            <P>Diseño: {item.order.selectedVinil}; Color: {item.order.vinilColor}; Cantidad: {item.order.totalViniles};</P>
+            <P>Dimensiones: {item.order.vinilDimensions}; Subtotal: ${item.order.totalAmount}</P>
             <hr />
         {/each}
     </div>
@@ -173,8 +175,8 @@
     {#if orderId}
         <div class="mt-4 p-3 bg-green-100 rounded-lg">
             {#if orderSavedSuccess}
-                <P weight="bold" class="text-green-800">¡Orden enviada con éxito!</P>
-                <P class="text-green-700">Tu número de pedido es: <br /> {orderId}</P>
+                <P weight="bold" class="text-green-800 dark:text-gray-900">¡Orden enviada con éxito!</P>
+                <P class="text-green-700 dark:text-gray-900">Tu número de pedido es: <br /> {orderId}</P>
                 
                 {#if pdfGenerated}
                     <Button class="mt-2" color="blue" onclick={downloadPDF}>
@@ -189,7 +191,7 @@
                 </Button>
             {/if}
             
-            <Button class="mt-2 ml-2" disabled={cerrarDisabled} color="alternative" onclick={closeOrderAndClearCart}>
+            <Button class="mt-2 ml-2" disabled={cerrarDisabled} color="primary" onclick={closeOrderAndClearCart}>
                 Cerrar
             </Button>
         </div>

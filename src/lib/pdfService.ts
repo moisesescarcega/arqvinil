@@ -36,21 +36,21 @@ export function generateOrderPDF(items: CartItem[], totalAmount: number, orderId
     yPosition += 10;
     
     doc.setFontSize(10);
-    doc.text(`Escala: ${item.order.scale} | Color: ${item.color} | Cantidad: ${item.order.kits} kits`, 20, yPosition);
+    doc.text(`Diseño: ${item.order.selectedVinil} | Color: ${item.color} | Cantidad: ${item.order.totalViniles}`, 20, yPosition);
     yPosition += 7;
     
-    if ('kit' in item.order.figures && item.order.figures.kit) {
-      doc.text(`Kit predefinido: ${item.order.figures.kit}`, 20, yPosition);
-      yPosition += 7;
-    } else {
-      doc.text(`Figuras: ${('standing_man' in item.order.figures) ? `Hombre de pie: ${item.order.figures.standing_man}, ` : ''}` +
-              `${('standing_woman' in item.order.figures) ? `Mujer de pie: ${item.order.figures.standing_woman}, ` : ''}` +
-              `${('sitting' in item.order.figures) ? `Sentado: ${item.order.figures.sitting}, ` : ''}` +
-              `${('walking' in item.order.figures) ? `Caminando: ${item.order.figures.walking}` : ''}`, 20, yPosition);
-      yPosition += 7;
-    }
+    // if ('kit' in item.order.figures && item.order.figures.kit) {
+    //   doc.text(`Kit predefinido: ${item.order.figures.kit}`, 20, yPosition);
+    //   yPosition += 7;
+    // } else {
+    //   doc.text(`Figuras: ${('standing_man' in item.order.figures) ? `Hombre de pie: ${item.order.figures.standing_man}, ` : ''}` +
+    //           `${('standing_woman' in item.order.figures) ? `Mujer de pie: ${item.order.figures.standing_woman}, ` : ''}` +
+    //           `${('sitting' in item.order.figures) ? `Sentado: ${item.order.figures.sitting}, ` : ''}` +
+    //           `${('walking' in item.order.figures) ? `Caminando: ${item.order.figures.walking}` : ''}`, 20, yPosition);
+    //   yPosition += 7;
+    // }
     
-    doc.text(`Total de escalas: ${item.order.totalFigures} | Costo por unidad: $${item.order.costPerFigure} MXN`, 20, yPosition);
+    doc.text(`Dimensiones: ${item.order.vinilDimensions}`, 20, yPosition);
     yPosition += 7;
     
     doc.text(`Subtotal: $${item.order.totalAmount.toFixed(2)} MXN`, 20, yPosition);
